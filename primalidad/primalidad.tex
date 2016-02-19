@@ -24,6 +24,7 @@
 \usepackage{verbatim}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{siunitx}
 
 \lstloadlanguages{C++}
 \lstnewenvironment{code}
@@ -40,6 +41,9 @@
 	numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=9pt,
 	frame=l, framesep=3pt,
 }
+
+% Para mechar color en el texto
+\lstset{escapeinside={<<<@}{@>>>}}
 
 \usepackage[spanish]{babel}
 % or whatever
@@ -280,7 +284,22 @@ Sin embargo, la implementación anterior puede resultar problemática al trabajar 
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Potenciación logarítmica}
+\begin{frame}{Potenciación logarítmica (idea)}
+  \begin{itemize}
+      \item Una buena idea es pensar en ir elevando al cuadrado sucesivamente, lo cual permite que el exponente crezca rápidamente.
+      \item Pensado de manera recursiva, si llamamos $f(a,n) = a^n$: \\
+              $\begin{array}{rcl}
+                     f(a,n) & = & \left \{ \begin{array}{cl}
+                                              1  & \mbox{si }n=0 \\
+                                              f \left (a^2, \frac{n}{2} \right ) & \mbox{si } n \mbox{ es par} \\
+                                              a \cdot f \left (a^2, \left \lfloor \frac{n}{2} \right \rfloor \right ) & \mbox{si } n \mbox{ es impar} \\
+                                           \end{array} \right . \\
+               \end{array}$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Potenciación logarítmica (código)}
 \begin{columns}
 \begin{column}{0.60\textwidth}
 \begin{lstlisting}
@@ -311,6 +330,103 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
 \section{Primalidad}
 
 \subsection{Criba}
+
+\begin{frame}{Problema}
+  \begin{itemize}
+      \item Una necesidad muy usual al trabajar con números primos es la de calcular \textit{todos} los primos desde $1$ hasta $N$ para un cierto $N$.
+      \item La idea es realizarlo de manera más eficiente que verificando la primalidad de cada número por separado.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Idea 1}
+  \begin{itemize}
+      \item Si verificásemos cada número por separado, lo que haríamos sería recorrer sus posibles \textbf{divisores} para ver si es primo.
+      \item ¿Que pasaría si en lugar de probar los divisores de cada número, descartásemos sus \textbf{múltiplos}?
+      \pause
+      \invisible<1-1>{
+           \item Hay $\frac{N}{1}$ múltiplos de $1$, $\frac{N}{2}$ múltiplos de $2$, $\cdots \frac{N}{N}$ múltiplos de $N$. Luego si recorremos todo
+            el costo total es
+            
+            $$\sum_{i=1}^N{\frac{N}{i}} = N \sum_{i=1}^N{\frac{1}{i}} = \Theta(N \lg N)$$
+      }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Idea 1 (cont)}
+  \begin{itemize}
+      \item Esta idea es verdaderamente muy sencilla, y como vimos ya alcanza una eficiencia aceptable.
+      \item Además, al recorrer los múltiplos de todos los números, se encuentran todos los divisores propios de todos los números.
+      \item De esta forma es extremadamente fácil modificar esta versión para computar fácilmente sumas de divisores, cantidades, y otras funciones similares.
+  \end{itemize}
+
+\begin{lstlisting}
+    for(int i = 0; i < MAX; i++) p[i] = true;
+    p[0] = p[1] = false;
+    for (int i = 2; i < MAX; i++)
+        for (int j = 2*i; j < MAX; j += i) p[j] = false;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Idea 2}
+  \begin{itemize}
+      \item Todo número compuesto tiene un divisor \textbf{primo}.
+      \item Por lo tanto, alcanza con descartar los múltiplos de los números primos que vamos encontrando.
+      \item La cantidad de operaciones a realizar en este caso se reduce a $\Theta(N \lg \lg N)$, que es ``casi lineal''.
+  \end{itemize}
+
+\begin{lstlisting}
+    for(int i = 0; i < MAX; i++) p[i] = true;
+    p[0] = p[1] = false;
+    for (int i = 2; i < MAX; i++)
+    <<<@\textcolor{red}{if (p[i])}@>>>
+        for (int j = 2*i; j < MAX; j += i) p[j] = false;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Idea 3}
+  \begin{itemize}
+      \item Todo número compuesto tiene un divisor primo $p$, con $p \leq \sqrt{N}$ .
+      \item Podemos parar el proceso de descarte de múltiplos en $\sqrt{N}$.
+      \item La cantidad de operaciones sigue siendo $\Theta(N \lg \lg N)$.
+  \end{itemize}
+
+\begin{lstlisting}
+    for(int i = 0; i < MAX; i++) p[i] = true;
+    p[0] = p[1] = false;
+    for (int i = 2; <<<@\textcolor{red}{i*i}@>>> < MAX; i++)
+    if (p[i])
+        for (int j = 2*i; j < MAX; j += i) p[j] = false;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Idea 4}
+  \begin{itemize}
+      \item De manera similar al caso anterior, si $N < p^2$ es compuesto, tiene un divisor primo menor que $p$, y ya habrá sido descartado.
+      \item Podemos comenzar el descarte de los múltiplos de $i$ por $i^2$.
+      \item Aún con esta optimización, la cantidad de operaciones sigue siendo $\Theta(N \lg \lg N)$.
+  \end{itemize}
+
+\begin{lstlisting}
+    for(int i = 0; i < MAX; i++) p[i] = true;
+    p[0] = p[1] = false;
+    for (int i = 2; i*i < MAX; i++)
+    if (p[i])
+        for (int j = <<<@\textcolor{red}{i*i}@>>>; j < MAX; j += i) p[j] = false;
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Tiempos}
+     Para \texttt{MAX=300M}:
+     
+     $$\begin{array}{rl}
+           \mbox{\texttt{RecorrerMultiplos}} & \SI{39.1}{\second} \\
+           \mbox{\texttt{CribaBasica}} & \SI{5.6}{\second} \\
+           \mbox{\texttt{CribaHastaRaiz}} & \SI{3.2}{\second} \\
+           \mbox{\texttt{CribaHastaRaizDesdeICuadrado}} & \SI{3.0}{\second} \\
+       \end{array}$$
+\end{frame}
+
 
 \subsection{Verificación directa}
 
