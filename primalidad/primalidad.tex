@@ -25,6 +25,7 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{siunitx}
+\usepackage{colortbl}
 
 \lstloadlanguages{C++}
 \lstnewenvironment{code}
@@ -352,7 +353,7 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Idea 1 (cont)}
+\begin{frame}[fragile]{Idea 1 (cont.)}
   \begin{itemize}
       \item Esta idea es verdaderamente muy sencilla, y como vimos ya alcanza una eficiencia aceptable.
       \item Además, al recorrer los múltiplos de todos los números, se encuentran todos los divisores propios de todos los números.
@@ -432,11 +433,172 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
 
 \subsubsection{Algoritmo ingenuo}
 
+\begin{frame}{Algoritmo ingenuo}
+  \begin{itemize}
+      \item Como ya hemos mencionado, un número compuesto $N$ tendrá un divisor primo menor o igual a $\sqrt{N}$
+      \item Un algoritmo simple $O(\sqrt{N})$ consistirá entonces de un chequeo de todos los números enteros en el rango $[2, \sqrt{N}]$,
+             en busca de divisores de $N$.
+  \end{itemize}
+\end{frame}
+
+
 \subsubsection{Test de Rabin - Miller}
+
+\begin{frame}{Test de Rabin - Miller (Introducción)}
+  \begin{itemize}
+      \item El test de Rabin-Miller es un algoritmo \textbf{probabilístico}, muy eficiente para verificar si un número es primo.
+      \item Se basa en su antecesor, el \textit{test de Fermat}.
+      \item Recordemos: $a \not\equiv 0 (\mbox{mód } p) \Rightarrow a^{p-1} \equiv 1 (\mbox{mód } p)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Test de Fermat}
+  \begin{itemize}
+      \item El test de Fermat es un test probabilístico para verificar si un número candidato $N$ es primo.
+      \item Se selecciona para ello un entero al azar $a \in [1, N)$.
+      \item Si $N$ es primo necesariamente será $a^{N-1} \equiv 1 (\mbox{mód } N)$, así que si esto no ocurre descartamos al número como primo.
+      \item Si esto ocurre, el número pasó el test de Fermat con $a$ como testigo. El test puede repetirse con varios valores de $a$ para aumentar la confianza.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Test de Fermat: problema}
+  \begin{itemize}
+      \item El test de Fermat es eficiente, pero tiene un problema: existen ejemplos de números que pasan el test de Fermat para todo valor de $a$ coprimo con $N$, pero que son compuestos.
+      \item Estos números extremos son raros y se denominan de \textit{Carmichael}. Los primeros son 561, 1105, 1729, 2465, 2821, 6601, 8911.
+      \item Con estos números, el test solamente los detecta como compuestos si $a$ es múltiplo de uno de los primos que dividen a $N$, y por lo tanto el test es prácticamente una búsqueda de divisores aleatoria.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (idea)}
+  \begin{itemize}
+      \item El test de Rabin-Miller elimina este problema verificando una condición más fuerte.
+      \item Observemos que si $p > 2$ es primo y $x^2 = 1 (\mbox{mód } p)$, $x$ solo puede ser $1$ o $-1$ módulo $p$.
+      \item Luego si $p-1 = 2^\alpha k$, con $k$ impar y $\alpha \geq 1$, tenemos que para cualquier $a \not \equiv 0 (\mbox{mód } p)$ debe ser $a^{2^\alpha k} \equiv 1 (\mbox{mód } p)$.
+      \item Pero entonces $a^{2^{\alpha-1} k} \equiv 1 \mbox{ o } -1 (\mbox{mód } p)$
+      \item Y si fuera $1$, entonces nuevamente $a^{2^{\alpha-2} k} \equiv 1 \mbox{ o } -1 (\mbox{mód } p)$
+      \item Y así podemos repetir el razonamiento hasta que $a^{k} \equiv 1$ o bien $a^{2^j k} \equiv -1$ para algún $0 \leq j < \alpha$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (idea cont.)}
+  Tenemos entonces las siguientes posibilidades para el valor de $a^{2^jk}$ (una por columna):
+  $$\begin{array}{rccccccc}
+      \mathbf{j} & \  & \ & \   & \ & \ & \  \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1  \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1     \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1    \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots    \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1\\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 \\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (implementación)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitó en el paso anterior:
+  $$\begin{array}{rccccc>{\columncolor{blue!30}}c>{\columncolor{blue!30}}cl}
+      \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1 &    \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1 &   \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots &   \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1 &\\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 & \\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 & \cellcolor{blue!30} a^k \equiv 1 \mbox{ o } -1 \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (implementación)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitó en el paso anterior:
+  $$\begin{array}{rcccc>{\columncolor{blue!30}}cccl}
+      \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1 &    \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1 &   \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots &   \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1 &\\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 & \cellcolor{blue!30} a^{2k} = (a^{k})^2 \equiv -1\\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 & \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (implementación)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitó en el paso anterior:
+  $$\begin{array}{rccc>{\columncolor{blue!30}}ccccl}
+      \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1 &    \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1 &   \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots &   \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1 & \cellcolor{blue!30} a^{2^2k} = (a^{2k})^2 \equiv -1\\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 & \\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 & \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (implementación)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitó en el paso anterior:
+  $$\begin{array}{rc>{\columncolor{blue!30}}ccccccl}
+      \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1 &    \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1 & \cellcolor{blue!30} a^{2^{\alpha-2}k} \equiv -1   \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots &   \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1 & \\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 & \\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 & \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (implementación)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitó en el paso anterior:
+  $$\begin{array}{r>{\columncolor{blue!30}}cccccccl}
+      \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
+      \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
+      \alpha-1 & -1 & 1 & \cdots & 1 & 1 & 1 & 1 & \cellcolor{blue!30} a^{2^{\alpha-1}k} \equiv -1   \\
+      \alpha-2 & ? & -1 & \cdots & 1 & 1 & 1 & 1 &   \\
+      \cdots & \cdots & \cdots & \cdots & \cdots  & \cdots & \cdots &  \cdots &   \\
+      2 & ? & ? & \cdots & -1 &  1 & 1  & 1 & \\
+      1 & ? & ? & \cdots &  ? & -1 & 1  & 1 & \\
+      0 & ? & ? & \cdots &  ? &  ? & -1 & 1 & \\
+    \end{array}
+  $$
+\end{frame}
+
+\begin{frame}{Test de Rabin - Miller (conclusión)}
+    \begin{itemize}
+      \item Si ninguno de los casos anteriores se da, concluímos que definitivamente el número no es primo.
+      \item Si alguno funciona, ese valor de $a$ funciona y el número parece ser primo.
+      \item Al igual que en el test de Fermat, conviene utilizar varios valores de $a$ para aumentar la confianza.
+      \item En el caso del test de Rabin-Miller, tenemos la garantía de que si $N$ es compuesto, al menos el 75\% de los posibles restos $a$ no nulos módulo $N$ lo demostrarán usando el test.
+      \item Por lo tanto si repetimos el test $k$ veces sobre un número compuesto, eligiendo números de manera aleatoria, uniforme e independiente, la probabilidad de error es como máximo $\frac{1}{4^k}$.
+      \item Los números primos siempre pasan el test, y son reportados como tales.
+  \end{itemize}
+\end{frame}
 
 \section{Factorización}
 
 \subsection{Criba}
+
+\begin{frame}[fragile]{Factorización logarítmica}
+  \begin{itemize}
+      \item Buena alternativa si nos interesa poder factorizar rápidamente cualquier número hasta $N$, y aceptamos el costo de una criba hasta $N$.
+      \item Si en lugar de solamente guardar si un número es primo o no, guardamos un primo que lo divida mientras hacemos la criba, luego podemos saber un divisor primo de cualquier número en $O(1)$. Esto permite factorizar cualquier número en $O(\lg N)$.
+  \end{itemize}
+
+\begin{lstlisting}
+    for(int i = 0; i < MAX; i++) p[i] = i;
+    p[0] = p[1] = 1;
+    for (int i = 2; i*i < MAX; i++)
+    if (p[i] == i)
+        for (int j = i*i; j < MAX; j += i) p[j] = i;
+\end{lstlisting}
+\end{frame}
 
 \subsection{Factorización directa}
 
