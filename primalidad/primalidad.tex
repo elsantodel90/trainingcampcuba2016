@@ -577,7 +577,7 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
       \item Si ninguno de los casos anteriores se da, concluímos que definitivamente el número no es primo.
       \item Si alguno funciona, ese valor de $a$ funciona y el número parece ser primo.
       \item Al igual que en el test de Fermat, conviene utilizar varios valores de $a$ para aumentar la confianza.
-      \item En el caso del test de Rabin-Miller, tenemos la garantía de que si $N$ es compuesto, al menos el 75\% de los posibles restos $a$ no nulos módulo $N$ lo demostrarán usando el test.
+      \item En el caso del test de Rabin-Miller, tenemos la garantía de que si $N > 2$ es compuesto impar, al menos el 75\% de los posibles restos $a$ no nulos módulo $N$ lo demostrarán usando el test.
       \item Por lo tanto si repetimos el test $k$ veces sobre un número compuesto, eligiendo números de manera aleatoria, uniforme e independiente, la probabilidad de error es como máximo $\frac{1}{4^k}$.
       \item Los números primos siempre pasan el test, y son reportados como tales.
   \end{itemize}
@@ -804,10 +804,10 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
 \begin{frame}{Algoritmo de la $\rho$ de Pollard (cont.)}
     \begin{itemize}
       \item Supongamos que $p \leq \sqrt{N}$ es un primo que divide a $N$.
-      \item Si vamos generando números entre $1$ y $N-1$ al azar, sus restos módulo $p$ también serán aleatorios.
+      \item Si vamos generando números entre $0$ y $N-1$ al azar, sus restos módulo $p$ también serán aleatorios.
       \item La cantidad de pasos esperados hasta que se repita un valor módulo $N$ es $\Theta(\sqrt{N})$.
       \item Pero la cantidad de pasos esperados hasta que se repita un valor módulo $p$ es $\Theta(\sqrt{p}) = O(\sqrt[4]{N})$
-      \item Luego esperamos que exista una repetición módulo $p$ rápidamente, antes de que haya una repetición módulo $N$.
+      \item Luego esperamos que exista una repetición módulo $p$ rápidamente, mucho antes de que haya una repetición módulo $N$.
       \pause
       \invisible<1-1>{
          \item ¿Pero cómo detectamos esta repetición, \textbf{si no conocemos $p$ a priori}?
@@ -818,7 +818,7 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
 \begin{frame}[fragile]{Algoritmo de la $\rho$ de Pollard (cont.)}
     \begin{itemize}
       \item Si $x$ e $y$ son dos valores de nuestra secuencia que coinciden módulo $p$, $x-y \equiv 0 \modulo{p}$
-      \item ¡ Entonces $p | MCD(|x-y|,N)$ !
+      \item Entonces $p | MCD(|x-y|,N)$
       \item Este MCD puede calcularse con el algoritmo de Euclides sin conocer $p$.
       \begin{itemize}
            \item Si da $1 < MCD < N$, hemos encontrado un factor de $N$.
