@@ -58,8 +58,8 @@
 % does not look nice, try deleting the line with the fontenc.
 
 
-\title[Primalidad y factorización] % (optional, use only with long paper titles)
-{Primalidad y factorización}
+\title[Primalidad y Factorización] % (optional, use only with long paper titles)
+{Primalidad y Factorización}
 
 \author[Agustín Gutiérrez] % (optional, use only with lots of authors)
 {~Agustín Santiago Gutiérrez}
@@ -764,19 +764,119 @@ Este método realiza solamente $O(\lg b)$ multiplicaciones.
 
 \begin{frame}{Alternativa}
     \begin{itemize}
-    \item Una alternativa menos mencionada en la literatura, pero con mejores constantes (pero iguales complejidades asintóticas) es el algoritmo de Brent.
+    \item Una alternativa menos mencionada en la literatura, pero con mejores factores constantes (aunque idénticas complejidades asintóticas) es el algoritmo de Brent.
     \item Este se basa en ir duplicando la longitud de ciclo candidata en cada paso. Se puede leer sobre él en wikipedia (\textit{Brent's Cycle Detection}).
     \end{itemize}
 \end{frame}
 
 \subsubsection{Factorización rápida}
 
-\begin{frame}{Algoritmo de la $\rho$ de Pollard}
+\begin{frame}{Paradoja de los cumpleaños}
     \begin{itemize}
-      \item Más tarea.
+      \item ¿Cuál es la probabilidad de que dos personas cumplan años el mismo día, en una sala con 23 personas?
+      \pause
+      \invisible<1-1>{
+          \item 50.7\%
+          \pause
+          \invisible<1-2>{
+              \item En general, dado un universo de $n$ objetos, la cantidad de elementos que hay que sacar al azar hasta que la probabilidad de que dos sean iguales
+                 sea al menos 50\% es $\left \lceil \sqrt{2n \ln 2} \right \rceil + \epsilon$ , donde $\epsilon \in \{ 0, 1 \}$
+              \item Similarmente, la cantidad esperada de elementos que hay que sacar al azar hasta que aparezca una primera repetición es
+                    $\sqrt{\frac{\pi n}{2}} + \frac{2}{3} + \epsilon$ , donde $|\epsilon| \leq 1$  (Ramanujan, Watson y Knuth).
+              \pause
+              \invisible<1-3>{
+                  \item \textbf{En resumen}, son $O(\sqrt{n})$ pasos hasta la primera repetición.
+              }
+          }
+      }
     \end{itemize}
 \end{frame}
 
+
+\begin{frame}{Algoritmo de la $\rho$ de Pollard}
+    \begin{itemize}
+      \item Asumimos que $N$ es compuesto (podemos comenzar verificando su primalidad con algún test rápido como Rabin-Miller).
+      \item La idea es aprovechar la paradoja de los cumpleaños para encontrar un factor propio de $N$ rápidamente.
+      \item Una vez que encontramos un factor de $N$, basta repetir el procedimiento recursivamente hasta descomponer a $N$ en primos.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Algoritmo de la $\rho$ de Pollard (cont.)}
+    \begin{itemize}
+      \item Supongamos que $p \leq \sqrt{N}$ es un primo que divide a $N$.
+      \item Si vamos generando números entre $1$ y $N-1$ al azar, sus restos módulo $p$ también serán aleatorios.
+      \item La cantidad de pasos esperados hasta que se repita un valor módulo $N$ es $\Theta(\sqrt{N})$.
+      \item Pero la cantidad de pasos esperados hasta que se repita un valor módulo $p$ es $\Theta(\sqrt{p}) = O(\sqrt[4]{N})$
+      \item Luego esperamos que exista una repetición módulo $p$ rápidamente, antes de que haya una repetición módulo $N$.
+      \pause
+      \invisible<1-1>{
+         \item ¿Pero cómo detectamos esta repetición, \textbf{si no conocemos $p$ a priori}?
+      }
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Algoritmo de la $\rho$ de Pollard (cont.)}
+    \begin{itemize}
+      \item Si $x$ e $y$ son dos valores de nuestra secuencia que coinciden módulo $p$, $x-y \equiv 0 \modulo{p}$
+      \item ¡ Entonces $p | MCD(|x-y|,N)$ !
+      \item Este MCD puede calcularse con el algoritmo de Euclides sin conocer $p$.
+      \begin{itemize}
+           \item Si da $1 < MCD < N$, hemos encontrado un factor de $N$.
+           \item Si da $MCD=N$, hemos tenido una repetición en la secuencia módulo $N$.
+           \item Si da $MCD=1$, no hemos detectado ninguna repetición módulo $p$.
+      \end{itemize}
+      
+           \texttt{int mcd(int a,int b) \\ \{return (a == 0) ? b : mcd(b\%a, a) ;\} }
+           
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Algoritmo de la $\rho$ de Pollard (cont.)}
+    \begin{itemize}
+      \item Notar que con este truco podemos verificar si $x$ e $y$ dados son coincidentes módulo algún $p$.
+      \item Es decir, a la hora de buscar repeticiones en nuestra secuencia, \textbf{solamente tenemos un operador de igualdad}.
+      \item La mejor estructura para buscar repeticiones en general con solamente ese operador tomaba $O(j^2)$, lo cual nos devolvería a la complejidad $O(\sqrt{N})$
+      \pause
+      \invisible<1-1>{
+         \item Solución: Utilizar una secuencia \textbf{pseudoaleatoria}, ``en lugar de'' generar números verdaderamente al azar.
+         \item Con esto la secuencia será $x_1$, $f(x_1)$, $f(f(x_1))$ y podemos utilizar el algoritmo de la liebre y la tortuga.
+      }
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Algoritmo de la $\rho$ de Pollard (implementación)}
+    \begin{itemize}
+      \item Una función pseudoaleatoria módulo $N$ que funciona bien es $f(X) = X^2 + AX + B$, con $1 \leq A,B < N$ elegidos al azar.
+    \end{itemize}      
+
+\small
+\begin{verbatim}
+int factor(int N) {
+    A = elegir al azar;
+    B = elegir al azar;
+    // f es X*(X+A) + B modulo N
+    int x = 2, y = 2, d;
+    do {
+        x = f(x);
+        y = f(f(y));
+        d = mcd(abs(x-y), N);
+    } while (d == 1);
+    return d;
+}\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Algoritmo de la $\rho$ de Pollard (conclusiones)}
+
+    \begin{itemize}
+      \item Si tenemos mala suerte y factor retorna $N$, repetimos la llamada hasta que los valores de $A$ y $B$ funcionen.
+      \item El evento anterior normalmente no ocurre, ya que la secuencia se repite módulo $p$ antes que módulo $N$.
+      \item Como dijimos, la complejidad esperada es $O(\sqrt{p})$ hasta extraer un factor, siendo $p$ un primo que divida a $N$.
+      \item La complejidad total esperada del algoritmo resulta ser entonces $O \left (\sqrt[4]{N} \right )$ operaciones aritméticas y cálculos de MCD.
+      \item Más precisamente, $O \left (\sum_{p \left |\frac{N}{p_{max}} \right .}{\sqrt p} \right )$, considerados con multiplicidad según el exponente en la factorización de $\frac{N}{p_{max}}$.
+      \item Notar que aunque $N$ sea muy grande, si los primos que dividen a $N$ son pequeños, salvo a lo sumo un único primo grande con exponente $1$, el algoritmo es extremadamente rápido.
+    \end{itemize}
+\end{frame}
 
 
 \end{document}
