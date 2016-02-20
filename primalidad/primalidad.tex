@@ -49,7 +49,7 @@
 \usepackage[spanish]{babel}
 % or whatever
 
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 % or whatever
 
 \usepackage{times}
@@ -58,11 +58,11 @@
 % does not look nice, try deleting the line with the fontenc.
 
 
-\title[ProgramaciÛn Din·mica] % (optional, use only with long paper titles)
-{Primalidad y factorizaciÛn}
+\title[Primalidad y factorizaci√≥n] % (optional, use only with long paper titles)
+{Primalidad y factorizaci√≥n}
 
-\author[AgustÌn GutiÈrrez] % (optional, use only with lots of authors)
-{~AgustÌn Santiago GutiÈrrez}
+\author[Agust√≠n Guti√©rrez] % (optional, use only with lots of authors)
+{~Agust√≠n Santiago Guti√©rrez}
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -72,9 +72,9 @@
   Universidad de Buenos Aires
 }
 \date[Camp 2016] % (optional, should be abbreviation of conference name)
-{Campamento CaribeÒo ACM-ICPC 2016}
+{Campamento Caribe√±o ACM-ICPC 2016}
 
-% Ac· se puede insertar el logo de la UBA
+% Ac√° se puede insertar el logo de la UBA
 % \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
 % \logo{\pgfuseimage{university-logo}}
 
@@ -117,40 +117,42 @@
 
 
 
-\section{AritmÈtica modular}
+\section{Aritm√©tica modular}
+
+\newcommand{\modulo}[1]{\unaccentedoperators \pmod{#1}}
 
 \subsection{Operaciones, estructura}
 
-\begin{frame}{DefiniciÛn}
-  \begin{block}{AritmÈtica mÛdulo $M$ ($\mathbb{Z}_M$)}
-  La aritmÈtica mÛdulo $M$ consiste en una modificaciÛn de la aritmÈtica usual de n˙meros enteros, en la cual trabajamos ˙nicamente con el \textit{resto} de los n˙meros al ser divididos por un cierto entero fijo $M>0$,
-  ignorando ``todo lo dem·s'' de los n˙meros involucrados.
+\begin{frame}{Definici√≥n}
+  \begin{block}{Aritm√©tica m√≥dulo $M$ ($\mathbb{Z}_M$)}
+  La aritm√©tica m√≥dulo $M$ consiste en una modificaci√≥n de la aritm√©tica usual de n√∫meros enteros, en la cual trabajamos √∫nicamente con el \textit{resto} de los n√∫meros al ser divididos por un cierto entero fijo $M>0$,
+  ignorando ``todo lo dem√°s'' de los n√∫meros involucrados.
   \end{block}
   \begin{itemize}
       \pause
-      \invisible<1>{\item AsÌ, $11 = 18$ si estamos trabajando mÛdulo $7$, pues ambos dejan un resto de $4$ en la divisiÛn por $7$. Esto se suele notar $11 \equiv 18 (\mbox{mÛd } 7)$}
+      \invisible<1>{\item As√≠, $11 = 18$ si estamos trabajando m√≥dulo $7$, pues ambos dejan un resto de $4$ en la divisi√≥n por $7$. Esto se suele notar $11 \equiv 18 \modulo{7}$}
       \pause
-      \invisible<1-2>{\item Una forma operacional de ver esta aritmÈtica es suponer que todo el tiempo tenemos los n˙meros reducidos al rango de enteros en $[0,M)$, y tomamos el resto de la divisiÛn por $M$ para devolverlos a ese rango luego de cada operaciÛn.}
+      \invisible<1-2>{\item Una forma operacional de ver esta aritm√©tica es suponer que todo el tiempo tenemos los n√∫meros reducidos al rango de enteros en $[0,M)$, y tomamos el resto de la divisi√≥n por $M$ para devolverlos a ese rango luego de cada operaci√≥n.}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Propiedades}
-    A los efectos de realizar sumas, restas y productos, la aritmÈtica mÛdular es an·loga a la aritmÈtica usual, manteniendo sus propiedades importantes.
+    A los efectos de realizar sumas, restas y productos, la aritm√©tica m√≥dular es an√°loga a la aritm√©tica usual, manteniendo sus propiedades importantes.
   \begin{itemize}
-       \item $a+b \equiv b+a (\mbox{mÛd } M)$
-       \item $(a+b)+c \equiv a+(b+c) (\mbox{mÛd }M)$
+       \item $a+b \equiv b+a \modulo{M}$
+       \item $(a+b)+c \equiv a+(b+c) \modulo{M}$
        \item $0$ es el neutro de la suma.
-       \item Para todo $a$ existe un ˙nico inverso aditivo modular $-a$, $a + (-a) \equiv  0 (\mbox{mÛd } M)$. $a-b  \equiv  a + (-b) (\mbox{mÛd }M)$
-       \item $a \cdot b \equiv b \cdot a (\mbox{mÛd } M)$
-       \item $(a \cdot b) \cdot c \equiv a \cdot (b \cdot c) (\mbox{mÛd } M)$
+       \item Para todo $a$ existe un √∫nico inverso aditivo modular $-a$, $a + (-a) \equiv  0 \modulo{M}$. $a-b  \equiv  a + (-b) \modulo{M}$
+       \item $a \cdot b \equiv b \cdot a \modulo{M}$
+       \item $(a \cdot b) \cdot c \equiv a \cdot (b \cdot c) \modulo{M}$
        \item $1$ es el neutro del producto.
-       \item $(a+b) \cdot c \equiv a \cdot c + b \cdot c (\mbox{mÛd } M)$
+       \item $(a+b) \cdot c \equiv a \cdot c + b \cdot c \modulo{M}$
   \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Forma operacional en el cÛdigo}
-Supongamos que se tiene que computar una suma de los n˙meros enteros \texttt{a[0]} hasta \texttt{a[N-1]}, pero solamente nos importan los ˙ltimos 4 dÌgitos (equivale a trabajar mÛdulo 10000).
+\begin{frame}[fragile]{Forma operacional en el c√≥digo}
+Supongamos que se tiene que computar una suma de los n√∫meros enteros \texttt{a[0]} hasta \texttt{a[N-1]}, pero solamente nos importan los √∫ltimos 4 d√≠gitos (equivale a trabajar m√≥dulo 10000).
 
 \begin{columns}
 \begin{column}{0.65\textwidth}
@@ -162,50 +164,50 @@ for (int i = 0; i < N; i++)
 \end{column}
 \end{columns}
 
-Como decÌamos antes, a nivel de operaciones trabajar con aritmÈtica modular equivale a simplemente tomar mÛdulo luego de cada operaciÛn aritmÈtica b·sica.
+Como dec√≠amos antes, a nivel de operaciones trabajar con aritm√©tica modular equivale a simplemente tomar m√≥dulo luego de cada operaci√≥n aritm√©tica b√°sica.
 
 \end{frame}
 
-\begin{frame}{Problema ante n˙meros negativos}
-Sin embargo, la implementaciÛn anterior puede resultar problem·tica al trabajar con n˙meros \textbf{negativos}.
+\begin{frame}{Problema ante n√∫meros negativos}
+Sin embargo, la implementaci√≥n anterior puede resultar problem√°tica al trabajar con n√∫meros \textbf{negativos}.
 
 \begin{itemize}
-    \item Si por ejemplo fuera $N=2$, \texttt{a[0]=123} y \texttt{a[1]=-200}, el cÛdigo anterior produce -77, que puede no ser lo deseado.
-    \item Incluso si no hay n˙meros negativos en el problema, es muy com˙n que \textbf{restemos} n˙meros en nuestra soluciÛn.
-    \item Estos resultados con valores negativos ocurren porque el resultado de la divisiÛn entera se redondea hacia cero en los lenguajes y plataformas m·s populares.
+    \item Si por ejemplo fuera $N=2$, \texttt{a[0]=123} y \texttt{a[1]=-200}, el c√≥digo anterior produce -77, que puede no ser lo deseado.
+    \item Incluso si no hay n√∫meros negativos en el problema, es muy com√∫n que \textbf{restemos} n√∫meros en nuestra soluci√≥n.
+    \item Estos resultados con valores negativos ocurren porque el resultado de la divisi√≥n entera se redondea hacia cero en los lenguajes y plataformas m√°s populares.
     \pause
-    \invisible<1-1>{\item SoluciÛn: \\ \texttt{int MOD(int x, int M)\{return ((x\%M)+M)\%M;\}} }
+    \invisible<1-1>{\item Soluci√≥n: \\ \texttt{int MOD(int x, int M)\{return ((x\%M)+M)\%M;\}} }
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}{Cuidado con el overflow}
 \begin{itemize}
-    \item Otro problema al que es especialmente com˙n enfrentarse al trabajar con aritmÈtica modular es el peligro de tener overflow en las operaciones.
+    \item Otro problema al que es especialmente com√∫n enfrentarse al trabajar con aritm√©tica modular es el peligro de tener overflow en las operaciones.
 
-    \item Por esto es que tomamos mÛdulo luego de cada operaciÛn, y no solamente al final de todo el programa.
+    \item Por esto es que tomamos m√≥dulo luego de cada operaci√≥n, y no solamente al final de todo el programa.
     
-    \item Truquito en C++: Tener en cuenta el tipo \texttt{\_\_int128}, entero de 128 bits. No est· presente en todo judge, pero puede ser muy ˙til cuando est· disponible.
+    \item Truquito en C++: Tener en cuenta el tipo \texttt{\_\_int128}, entero de 128 bits. No est√° presente en todo judge, pero puede ser muy √∫til cuando est√° disponible.
 
 \end{itemize}
 \end{frame}
 
-\begin{frame}{øQuÈ pasa con la divisiÛn?}
+\begin{frame}{¬øQu√© pasa con la divisi√≥n?}
 \begin{itemize}
-    \item øPodemos operar modularmente con la divisiÛn tal cual lo hacemos con sumas, restas y productos?
+    \item ¬øPodemos operar modularmente con la divisi√≥n tal cual lo hacemos con sumas, restas y productos?
 
     \pause
     \invisible<1-1>{
         \item \textbf{NO}. Por ejemplo: \\
-             $\frac{10}{2}\equiv 5 (\mbox{mÛd } 8)$, pero $10 \equiv 2 (\mbox{mÛd } 8)$ y $\frac{2}{2} \equiv 1 \not\equiv 5 (\mbox{mÛd } 8)$
-        \item Podemos garantizar que este ``truco'' funciona cuando el mÛdulo es un n˙mero \textbf{primo}. \\
-             $\frac{27}{3}\equiv 2 (\mbox{mÛd } 7)$, $27 \equiv 6 (\mbox{mÛd } 7)$ y $\frac{6}{3} \equiv 2 (\mbox{mÛd } 7)$ \\
-             Pero solo si el divisor \textbf{no es cero} (mÛdulo $p$) \\
-             $\frac{140}{14}\equiv 3 (\mbox{mÛd } 7)$, pero $140 \equiv 14 \equiv 0 (\mbox{mÛd } 7)$ y $\frac{0}{0} \equiv ? (\mbox{mÛd } 7)$ \\
+             $\frac{10}{2}\equiv 5 \modulo{8}$, pero $10 \equiv 2 \modulo{8}$ y $\frac{2}{2} \equiv 1 \not\equiv 5 \modulo{8}$
+        \item Podemos garantizar que este ``truco'' funciona cuando el m√≥dulo es un n√∫mero \textbf{primo}. \\
+             $\frac{27}{3}\equiv 2 \modulo{7}$, $27 \equiv 6 \modulo{7}$ y $\frac{6}{3} \equiv 2 \modulo{7}$ \\
+             Pero solo si el divisor \textbf{no es cero} (m√≥dulo $p$) \\
+             $\frac{140}{14}\equiv 3 \modulo{7}$, pero $140 \equiv 14 \equiv 0 \modulo{7}$ y $\frac{0}{0} \equiv ? \modulo{7}$ \\
         \pause
         \invisible<1-2>{
-            \item øPero y si a˙n con un mÛdulo primo, la divisiÛn modular no resulta una divisiÛn entera? \\
-                 $\frac{12}{3}\equiv 4 (\mbox{mÛd } 7)$, pero $12 \equiv 5 (\mbox{mÛd } 7)$ y $\frac{5}{3} \equiv ? (\mbox{mÛd } 7)$ \\
+            \item ¬øPero y si a√∫n con un m√≥dulo primo, la divisi√≥n modular no resulta una divisi√≥n entera? \\
+                 $\frac{12}{3}\equiv 4 \modulo{7}$, pero $12 \equiv 5 \modulo{7}$ y $\frac{5}{3} \equiv ? \modulo{7}$ \\
         }
     }
 
@@ -213,14 +215,14 @@ Sin embargo, la implementaciÛn anterior puede resultar problem·tica al trabajar 
 \end{frame}
 
 \begin{frame}{Inversos modulares}
-    \begin{block}{DefiniciÛn}
-       Decimos que $b$ es inverso de $a$ mÛdulo $M$ si $a \cdot b \equiv 1 (\mbox{mÛd } M)$.
+    \begin{block}{Definici√≥n}
+       Decimos que $b$ es inverso de $a$ m√≥dulo $M$ si $a \cdot b \equiv 1 \modulo{M}$.
     \end{block}
-    Notar que solo un $a \not \equiv 0 (\mbox{mÛd } M)$ podrÌa tener un inverso, y de existir el inverso es ˙nico, y a su vez $a$ resulta ser el inverso de $b$.
+    Notar que solo un $a \not \equiv 0 \modulo{M}$ podr√≠a tener un inverso, y de existir el inverso es √∫nico, y a su vez $a$ resulta ser el inverso de $b$.
 \pause
       \invisible<1>{
         \begin{block}{Teorema}
-           Si $p$ es un n˙mero primo, entonces todo n˙mero $a \not \equiv 0 (\mbox{mÛd } p)$ tiene un inverso mÛdulo $p$.
+           Si $p$ es un n√∫mero primo, entonces todo n√∫mero $a \not \equiv 0 \modulo{p}$ tiene un inverso m√≥dulo $p$.
         \end{block}
         }
 
@@ -228,66 +230,66 @@ Sin embargo, la implementaciÛn anterior puede resultar problem·tica al trabajar 
 
 \begin{frame}{Inversos modulares: utilidad}
     \begin{itemize}
-        \item Recordemos que para realizar $3 / 2 = 1.5$, en realidad podrÌamos multiplicar directamente por el inverso de $2$, es decir $3 \cdot 0.5 = 1.5$
-        \item Lo mismo podemos hacer modularmente. Por ejemplo, $5 \cdot 3 \equiv 1 (\mbox{mÛd } 7)$, asÌ que $inv(3)=5$. Y entonces recordando el ejemplo anterior:\\
-               $\frac{12}{3}\equiv 4 (\mbox{mÛd } 7)$, \\ $12 \equiv 5 (\mbox{mÛd } 7)$ y \\$\mbox{``}\frac{5}{3}\mbox{''} \equiv 5 \cdot inv(3) \equiv 5 \cdot 5 \equiv 4 (\mbox{mÛd } 7)$ 
-        \item De esta forma, ya podemos dividir modularmente al trabajar con un n˙mero primo (excepto cuando el divisor se hace $0$ mÛdulo $p$).
-        \item øPero cÛmo calculamos los inversos?
+        \item Recordemos que para realizar $3 / 2 = 1.5$, en realidad podr√≠amos multiplicar directamente por el inverso de $2$, es decir $3 \cdot 0.5 = 1.5$
+        \item Lo mismo podemos hacer modularmente. Por ejemplo, $5 \cdot 3 \equiv 1 \modulo{7}$, as√≠ que $inv(3)=5$. Y entonces recordando el ejemplo anterior:\\
+               $\frac{12}{3}\equiv 4 \modulo{7}$, \\ $12 \equiv 5 \modulo{7}$ y \\$\mbox{``}\frac{5}{3}\mbox{''} \equiv 5 \cdot inv(3) \equiv 5 \cdot 5 \equiv 4 \modulo{7}$ 
+        \item De esta forma, ya podemos dividir modularmente al trabajar con un n√∫mero primo (excepto cuando el divisor se hace $0$ m√≥dulo $p$).
+        \item ¬øPero c√≥mo calculamos los inversos?
     \end{itemize}
 
 \end{frame}
 
 \subsection{Fermat e inversos modulares}
 
-\begin{frame}{PequeÒo teorema de Fermat}
+\begin{frame}{Peque√±o teorema de Fermat}
   \begin{block}{Teorema}
-  Si $p$ es primo y $a \not \equiv 0 (\mbox{mÛd } p)$, entonces $a^{p-1} \equiv 1 (\mbox{mÛd } p)$
+  Si $p$ es primo y $a \not \equiv 0 \modulo{p}$, entonces $a^{p-1} \equiv 1 \modulo{p}$
   \end{block}
   \begin{itemize}
       \item Por ejemplo $6^{30} = 7131416765184947029025 \cdot 31 + 1$
-      \item øPara quÈ puede servir este teorema?
+      \item ¬øPara qu√© puede servir este teorema?
   \end{itemize}
 \end{frame}
 
-\begin{frame}{AplicaciÛn 1: C·lculo de inversos}
+\begin{frame}{Aplicaci√≥n 1: C√°lculo de inversos}
   \begin{itemize}
-      \item Recordemos que dado $a \not \equiv 0$, si encontramos alg˙n n˙mero $x$ tal que $a \cdot x \equiv 1 (\mbox{mÛd } p)$, $x$ ser· autom·ticamente el inverso de $a$.
-      \item Si tomamos $x = a^{p-2}$, øCu·nto vale $a \cdot x$?
+      \item Recordemos que dado $a \not \equiv 0$, si encontramos alg√∫n n√∫mero $x$ tal que $a \cdot x \equiv 1 \modulo{p}$, $x$ ser√° autom√°ticamente el inverso de $a$.
+      \item Si tomamos $x = a^{p-2}$, ¬øCu√°nto vale $a \cdot x$?
       \pause
       \invisible<1-1>{
-        \item Tenemos $a \cdot x = a^{p-1} \equiv 1 (\mbox{mÛd } p)$ por el PequeÒo Teorema de Fermat.
-        \item Luego para cada $a$ su inverso ser· simplemente $a^{p-2}$.
+        \item Tenemos $a \cdot x = a^{p-1} \equiv 1 \modulo{p}$ por el Peque√±o Teorema de Fermat.
+        \item Luego para cada $a$ su inverso ser√° simplemente $a^{p-2}$.
       }
   \end{itemize}
 \end{frame}
 
-\begin{frame}{AplicaciÛn 2: Testeo de residuo cuadr·tico}
-  \begin{block}{DefiniciÛn}
-  Un resto $r$ se dice un \textit{residuo cuadr·tico} mÛdulo $p$ si existe $x$ tal que $x^2 \equiv r (\mbox{mÛd } p)$
+\begin{frame}{Aplicaci√≥n 2: Testeo de residuo cuadr√°tico}
+  \begin{block}{Definici√≥n}
+  Un resto $r$ se dice un \textit{residuo cuadr√°tico} m√≥dulo $p$ si existe $x$ tal que $x^2 \equiv r \modulo{p}$
   \end{block}
-  Por ejemplo los residuos cuadr·ticos mÛdulo $5$ son $0,1,4$. Notar que $0$ siempre es residuo cuadr·tico mÛdulo $p$.
+  Por ejemplo los residuos cuadr√°ticos m√≥dulo $5$ son $0,1,4$. Notar que $0$ siempre es residuo cuadr√°tico m√≥dulo $p$.
   \begin{itemize}
-          \item Si $r \not \equiv 0$ es residuo cuadr·tico, øCu·nto vale $r^{\frac{p-1}{2}}$?
+          \item Si $r \not \equiv 0$ es residuo cuadr√°tico, ¬øCu√°nto vale $r^{\frac{p-1}{2}}$?
           \pause
       \invisible<1-1>{
-          \item $r \equiv x^2$ para alg˙n $x \not \equiv 0$, y entonces $r^{\frac{p-1}{2}} \equiv (x^2)^{\frac{p-1}{2}} \equiv 1 (\mbox{mÛd } p)$
-          \item Se puede verificar que adem·s si para alg˙n $r$ vale $r^{\frac{p-1}{2}} \equiv 1 (\mbox{mÛd } p)$, $r$ es residuo cuadr·tico mÛdulo $p$.
+          \item $r \equiv x^2$ para alg√∫n $x \not \equiv 0$, y entonces $r^{\frac{p-1}{2}} \equiv (x^2)^{\frac{p-1}{2}} \equiv 1 \modulo{p}$
+          \item Se puede verificar que adem√°s si para alg√∫n $r$ vale $r^{\frac{p-1}{2}} \equiv 1 \modulo{p}$, $r$ es residuo cuadr√°tico m√≥dulo $p$.
       }
   \end{itemize}
 \end{frame}
 
-\subsection{PotenciaciÛn logarÌtmica}
+\subsection{Potenciaci√≥n logar√≠tmica}
 
-\begin{frame}{PotenciaciÛn logarÌtmica}
+\begin{frame}{Potenciaci√≥n logar√≠tmica}
   \begin{itemize}
-      \item En los ejemplos anteriores hemos reducido algunos problemas a calcular $a^b$ mÛdulo $M$, para enteros no negativos $a,b,M$.
-      \item øCÛmo hacemos esto m·s eficientemente que realizando $b-1$ multiplicaciones?
+      \item En los ejemplos anteriores hemos reducido algunos problemas a calcular $a^b$ m√≥dulo $M$, para enteros no negativos $a,b,M$.
+      \item ¬øC√≥mo hacemos esto m√°s eficientemente que realizando $b-1$ multiplicaciones?
   \end{itemize}
 \end{frame}
 
-\begin{frame}{PotenciaciÛn logarÌtmica (idea)}
+\begin{frame}{Potenciaci√≥n logar√≠tmica (idea)}
   \begin{itemize}
-      \item Una buena idea es pensar en ir elevando al cuadrado sucesivamente, lo cual permite que el exponente crezca r·pidamente.
+      \item Una buena idea es pensar en ir elevando al cuadrado sucesivamente, lo cual permite que el exponente crezca r√°pidamente.
       \item Pensado de manera recursiva, si llamamos $f(a,n) = a^n$: \\
               $\begin{array}{rcl}
                      f(a,n) & = & \left \{ \begin{array}{cl}
@@ -300,7 +302,7 @@ Sin embargo, la implementaciÛn anterior puede resultar problem·tica al trabajar 
 \end{frame}
 
 
-\begin{frame}[fragile]{PotenciaciÛn logarÌtmica (cÛdigo)}
+\begin{frame}[fragile]{Potenciaci√≥n logar√≠tmica (c√≥digo)}
 \begin{columns}
 \begin{column}{0.60\textwidth}
 \begin{lstlisting}
@@ -321,9 +323,9 @@ tint potlog(tint a,tint b, const tint M)
 \begin{column}{0.45\textwidth}
 Invariante de ciclo:
 
-La respuesta que deseamos es $res \cdot (a^b \mbox{ mÛdulo } M)$
+La respuesta que deseamos es $res \cdot (a^b \mbox{ m√≥dulo } M)$
 
-Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
+Este m√©todo realiza solamente $O(\lg b)$ multiplicaciones.
 \end{column}
 \end{columns}
 \end{frame}
@@ -334,18 +336,18 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 
 \begin{frame}{Problema}
   \begin{itemize}
-      \item Una necesidad muy usual al trabajar con n˙meros primos es la de calcular \textit{todos} los primos desde $1$ hasta $N$ para un cierto $N$.
-      \item La idea es realizarlo de manera m·s eficiente que verificando la primalidad de cada n˙mero por separado.
+      \item Una necesidad muy usual al trabajar con n√∫meros primos es la de calcular \textit{todos} los primos desde $1$ hasta $N$ para un cierto $N$.
+      \item La idea es realizarlo de manera m√°s eficiente que verificando la primalidad de cada n√∫mero por separado.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Idea 1}
   \begin{itemize}
-      \item Si verific·semos cada n˙mero por separado, lo que harÌamos serÌa recorrer sus posibles \textbf{divisores} para ver si es primo.
-      \item øQue pasarÌa si en lugar de probar los divisores de cada n˙mero, descart·semos sus \textbf{m˙ltiplos}?
+      \item Si verific√°semos cada n√∫mero por separado, lo que har√≠amos ser√≠a recorrer sus posibles \textbf{divisores} para ver si es primo.
+      \item ¬øQue pasar√≠a si en lugar de probar los divisores de cada n√∫mero, descart√°semos sus \textbf{m√∫ltiplos}?
       \pause
       \invisible<1-1>{
-           \item Hay $\frac{N}{1}$ m˙ltiplos de $1$, $\frac{N}{2}$ m˙ltiplos de $2$, $\cdots \frac{N}{N}$ m˙ltiplos de $N$. Luego si recorremos todo
+           \item Hay $\frac{N}{1}$ m√∫ltiplos de $1$, $\frac{N}{2}$ m√∫ltiplos de $2$, $\cdots \frac{N}{N}$ m√∫ltiplos de $N$. Luego si recorremos todo
             el costo total es
             
             $$\sum_{i=1}^N{\frac{N}{i}} = N \sum_{i=1}^N{\frac{1}{i}} = \Theta(N \lg N)$$
@@ -356,8 +358,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 \begin{frame}[fragile]{Idea 1 (cont.)}
   \begin{itemize}
       \item Esta idea es verdaderamente muy sencilla, y como vimos ya alcanza una eficiencia aceptable.
-      \item Adem·s, al recorrer los m˙ltiplos de todos los n˙meros, se encuentran todos los divisores propios de todos los n˙meros.
-      \item De esta forma es extremadamente f·cil modificar esta versiÛn para computar f·cilmente sumas de divisores, cantidades, y otras funciones similares.
+      \item Adem√°s, al recorrer los m√∫ltiplos de todos los n√∫meros, se encuentran todos los divisores propios de todos los n√∫meros.
+      \item De esta forma es extremadamente f√°cil modificar esta versi√≥n para computar f√°cilmente sumas de divisores, cantidades, y otras funciones similares.
   \end{itemize}
 
 \begin{lstlisting}
@@ -370,8 +372,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 
 \begin{frame}[fragile]{Idea 2}
   \begin{itemize}
-      \item Todo n˙mero compuesto tiene un divisor \textbf{primo}.
-      \item Por lo tanto, alcanza con descartar los m˙ltiplos de los n˙meros primos que vamos encontrando.
+      \item Todo n√∫mero compuesto tiene un divisor \textbf{primo}.
+      \item Por lo tanto, alcanza con descartar los m√∫ltiplos de los n√∫meros primos que vamos encontrando.
       \item La cantidad de operaciones a realizar en este caso se reduce a $\Theta(N \lg \lg N)$, que es ``casi lineal''.
   \end{itemize}
 
@@ -386,8 +388,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 
 \begin{frame}[fragile]{Idea 3}
   \begin{itemize}
-      \item Todo n˙mero compuesto tiene un divisor primo $p$, con $p \leq \sqrt{N}$ .
-      \item Podemos parar el proceso de descarte de m˙ltiplos en $\sqrt{N}$.
+      \item Todo n√∫mero compuesto tiene un divisor primo $p$, con $p \leq \sqrt{N}$ .
+      \item Podemos parar el proceso de descarte de m√∫ltiplos en $\sqrt{N}$.
       \item La cantidad de operaciones sigue siendo $\Theta(N \lg \lg N)$.
   \end{itemize}
 
@@ -402,9 +404,9 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 
 \begin{frame}[fragile]{Idea 4}
   \begin{itemize}
-      \item De manera similar al caso anterior, si $N < p^2$ es compuesto, tiene un divisor primo menor que $p$, y ya habr· sido descartado.
-      \item Podemos comenzar el descarte de los m˙ltiplos de $i$ por $i^2$.
-      \item A˙n con esta optimizaciÛn, la cantidad de operaciones sigue siendo $\Theta(N \lg \lg N)$.
+      \item De manera similar al caso anterior, si $N < p^2$ es compuesto, tiene un divisor primo menor que $p$, y ya habr√° sido descartado.
+      \item Podemos comenzar el descarte de los m√∫ltiplos de $i$ por $i^2$.
+      \item A√∫n con esta optimizaci√≥n, la cantidad de operaciones sigue siendo $\Theta(N \lg \lg N)$.
   \end{itemize}
 
 \begin{lstlisting}
@@ -429,14 +431,14 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 \end{frame}
 
 
-\subsection{VerificaciÛn directa}
+\subsection{Verificaci√≥n directa}
 
 \subsubsection{Algoritmo ingenuo}
 
 \begin{frame}{Algoritmo ingenuo}
   \begin{itemize}
-      \item Como ya hemos mencionado, un n˙mero compuesto $N$ tendr· un divisor primo menor o igual a $\sqrt{N}$
-      \item Un algoritmo simple $O(\sqrt{N})$ consistir· entonces de un chequeo de todos los n˙meros enteros en el rango $[2, \sqrt{N}]$,
+      \item Como ya hemos mencionado, un n√∫mero compuesto $N$ tendr√° un divisor primo menor o igual a $\sqrt{N}$
+      \item Un algoritmo simple $O(\sqrt{N})$ consistir√° entonces de un chequeo de todos los n√∫meros enteros en el rango $[2, \sqrt{N}]$,
              en busca de divisores de $N$.
   \end{itemize}
 \end{frame}
@@ -444,39 +446,39 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 
 \subsubsection{Test de Rabin - Miller}
 
-\begin{frame}{Test de Rabin - Miller (IntroducciÛn)}
+\begin{frame}{Test de Rabin - Miller (Introducci√≥n)}
   \begin{itemize}
-      \item El test de Rabin-Miller es un algoritmo \textbf{probabilÌstico}, muy eficiente para verificar si un n˙mero es primo.
+      \item El test de Rabin-Miller es un algoritmo \textbf{probabil√≠stico}, muy eficiente para verificar si un n√∫mero es primo.
       \item Se basa en su antecesor, el \textit{test de Fermat}.
-      \item Recordemos: $a \not\equiv 0 (\mbox{mÛd } p) \Rightarrow a^{p-1} \equiv 1 (\mbox{mÛd } p)$
+      \item Recordemos: $a \not\equiv 0 \modulo{p} \Rightarrow a^{p-1} \equiv 1 \modulo{p}$
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Test de Fermat}
   \begin{itemize}
-      \item El test de Fermat es un test probabilÌstico para verificar si un n˙mero candidato $N$ es primo.
+      \item El test de Fermat es un test probabil√≠stico para verificar si un n√∫mero candidato $N$ es primo.
       \item Se selecciona para ello un entero al azar $a \in [1, N)$.
-      \item Si $N$ es primo necesariamente ser· $a^{N-1} \equiv 1 (\mbox{mÛd } N)$, asÌ que si esto no ocurre descartamos al n˙mero como primo.
-      \item Si esto ocurre, el n˙mero pasÛ el test de Fermat con $a$ como testigo. El test puede repetirse con varios valores de $a$ para aumentar la confianza.
+      \item Si $N$ es primo necesariamente ser√° $a^{N-1} \equiv 1 \modulo{N}$, as√≠ que si esto no ocurre descartamos al n√∫mero como primo.
+      \item Si esto ocurre, el n√∫mero pas√≥ el test de Fermat con $a$ como testigo. El test puede repetirse con varios valores de $a$ para aumentar la confianza.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Test de Fermat: problema}
   \begin{itemize}
-      \item El test de Fermat es eficiente, pero tiene un problema: existen ejemplos de n˙meros que pasan el test de Fermat para todo valor de $a$ coprimo con $N$, pero que son compuestos.
-      \item Estos n˙meros extremos son raros y se denominan de \textit{Carmichael}. Los primeros son 561, 1105, 1729, 2465, 2821, 6601, 8911.
-      \item Con estos n˙meros, el test solamente los detecta como compuestos si $a$ es m˙ltiplo de uno de los primos que dividen a $N$, y por lo tanto el test es pr·cticamente una b˙squeda de divisores aleatoria.
+      \item El test de Fermat es eficiente, pero tiene un problema: existen ejemplos de n√∫meros que pasan el test de Fermat para todo valor de $a$ coprimo con $N$, pero que son compuestos.
+      \item Estos n√∫meros extremos son raros y se denominan de \textit{Carmichael}. Los primeros son 561, 1105, 1729, 2465, 2821, 6601, 8911.
+      \item Con estos n√∫meros, el test solamente los detecta como compuestos si $a$ es m√∫ltiplo de uno de los primos que dividen a $N$, y por lo tanto el test es pr√°cticamente una b√∫squeda de divisores aleatoria.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Test de Rabin - Miller (idea)}
   \begin{itemize}
-      \item El test de Rabin-Miller elimina este problema verificando una condiciÛn m·s fuerte.
-      \item Observemos que si $p > 2$ es primo y $x^2 = 1 (\mbox{mÛd } p)$, $x$ solo puede ser $1$ o $-1$ mÛdulo $p$.
-      \item Luego si $p-1 = 2^\alpha k$, con $k$ impar y $\alpha \geq 1$, tenemos que para cualquier $a \not \equiv 0 (\mbox{mÛd } p)$ debe ser $a^{2^\alpha k} \equiv 1 (\mbox{mÛd } p)$.
-      \item Pero entonces $a^{2^{\alpha-1} k} \equiv 1 \mbox{ o } -1 (\mbox{mÛd } p)$
-      \item Y si fuera $1$, entonces nuevamente $a^{2^{\alpha-2} k} \equiv 1 \mbox{ o } -1 (\mbox{mÛd } p)$
-      \item Y asÌ podemos repetir el razonamiento hasta que $a^{k} \equiv 1$ o bien $a^{2^j k} \equiv -1$ para alg˙n $0 \leq j < \alpha$
+      \item El test de Rabin-Miller elimina este problema verificando una condici√≥n m√°s fuerte.
+      \item Observemos que si $p > 2$ es primo y $x^2 = 1 \modulo{p}$, $x$ solo puede ser $1$ o $-1$ m√≥dulo $p$.
+      \item Luego si $p-1 = 2^\alpha k$, con $k$ impar y $\alpha \geq 1$, tenemos que para cualquier $a \not \equiv 0 \modulo{p}$ debe ser $a^{2^\alpha k} \equiv 1 \modulo{p}$.
+      \item Pero entonces $a^{2^{\alpha-1} k} \equiv 1 \mbox{ o } -1 \modulo{p}$
+      \item Y si fuera $1$, entonces nuevamente $a^{2^{\alpha-2} k} \equiv 1 \mbox{ o } -1 \modulo{p}$
+      \item Y as√≠ podemos repetir el razonamiento hasta que $a^{k} \equiv 1$ o bien $a^{2^j k} \equiv -1$ para alg√∫n $0 \leq j < \alpha$
   \end{itemize}
 \end{frame}
 
@@ -495,8 +497,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (implementaciÛn)}
-  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitÛ en el paso anterior:
+\begin{frame}{Test de Rabin - Miller (implementaci√≥n)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesit√≥ en el paso anterior:
   $$\begin{array}{rccccc>{\columncolor{blue!30}}c>{\columncolor{blue!30}}cl}
       \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
       \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
@@ -510,8 +512,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (implementaciÛn)}
-  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitÛ en el paso anterior:
+\begin{frame}{Test de Rabin - Miller (implementaci√≥n)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesit√≥ en el paso anterior:
   $$\begin{array}{rcccc>{\columncolor{blue!30}}cccl}
       \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
       \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
@@ -525,8 +527,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (implementaciÛn)}
-  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitÛ en el paso anterior:
+\begin{frame}{Test de Rabin - Miller (implementaci√≥n)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesit√≥ en el paso anterior:
   $$\begin{array}{rccc>{\columncolor{blue!30}}ccccl}
       \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
       \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
@@ -540,8 +542,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (implementaciÛn)}
-  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitÛ en el paso anterior:
+\begin{frame}{Test de Rabin - Miller (implementaci√≥n)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesit√≥ en el paso anterior:
   $$\begin{array}{rc>{\columncolor{blue!30}}ccccccl}
       \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
       \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
@@ -555,8 +557,8 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (implementaciÛn)}
-  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesitÛ en el paso anterior:
+\begin{frame}{Test de Rabin - Miller (implementaci√≥n)}
+  En general estas son chequeadas desde abajo hacia arriba, de forma que cada valor necesario es el cuadrado del que se necesit√≥ en el paso anterior:
   $$\begin{array}{r>{\columncolor{blue!30}}cccccccl}
       \mathbf{j} & \  & \ & \   & \ & \ & \ & \\
       \alpha & 1 & 1 & \cdots & 1 & 1 & 1 & 1 & \\
@@ -570,25 +572,45 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
   $$
 \end{frame}
 
-\begin{frame}{Test de Rabin - Miller (conclusiÛn)}
+\begin{frame}{Test de Rabin - Miller (conclusi√≥n)}
     \begin{itemize}
-      \item Si ninguno de los casos anteriores se da, concluÌmos que definitivamente el n˙mero no es primo.
-      \item Si alguno funciona, ese valor de $a$ funciona y el n˙mero parece ser primo.
+      \item Si ninguno de los casos anteriores se da, conclu√≠mos que definitivamente el n√∫mero no es primo.
+      \item Si alguno funciona, ese valor de $a$ funciona y el n√∫mero parece ser primo.
       \item Al igual que en el test de Fermat, conviene utilizar varios valores de $a$ para aumentar la confianza.
-      \item En el caso del test de Rabin-Miller, tenemos la garantÌa de que si $N$ es compuesto, al menos el 75\% de los posibles restos $a$ no nulos mÛdulo $N$ lo demostrar·n usando el test.
-      \item Por lo tanto si repetimos el test $k$ veces sobre un n˙mero compuesto, eligiendo n˙meros de manera aleatoria, uniforme e independiente, la probabilidad de error es como m·ximo $\frac{1}{4^k}$.
-      \item Los n˙meros primos siempre pasan el test, y son reportados como tales.
+      \item En el caso del test de Rabin-Miller, tenemos la garant√≠a de que si $N$ es compuesto, al menos el 75\% de los posibles restos $a$ no nulos m√≥dulo $N$ lo demostrar√°n usando el test.
+      \item Por lo tanto si repetimos el test $k$ veces sobre un n√∫mero compuesto, eligiendo n√∫meros de manera aleatoria, uniforme e independiente, la probabilidad de error es como m√°ximo $\frac{1}{4^k}$.
+      \item Los n√∫meros primos siempre pasan el test, y son reportados como tales.
   \end{itemize}
 \end{frame}
 
-\section{FactorizaciÛn}
+\begin{frame}{Test de Rabin - Miller (bonus)}
+    \begin{itemize}
+      \item Si los n√∫meros a verificar no son demasiado grandes, se conocen versiones deterministas del test probando con un conjunto espec√≠fico de valores de $a$.
+      \item Por ejemplo wikipedia menciona:
+        \begin{itemize}
+          \item if n < 4,759,123,141 $>2^{32}$, it is enough to test: \\ a = 2, 7, and 61;
+          \item if n < 18,446,744,073,709,551,616 = $2^{64}$, it is enough to test: \\a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, and 37.
+        \end{itemize}
+      \item Los art√≠culos citados son:
+        \begin{itemize}
+          \item Jaeschke, Gerhard (1993), ``On strong pseudoprimes to several bases'', Mathematics of Computation 61 (204): 915-926
+          \item Jiang, Yupeng; Deng, Yingpu (2014). ``Strong pseudoprimes to the first eight prime bases''. Mathematics of Computation 83 (290): 2915-2924. doi:10.1090/S0025-5718-2014-02830-5
+        \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\section{Factorizaci√≥n}
 
 \subsection{Criba}
 
-\begin{frame}[fragile]{FactorizaciÛn logarÌtmica}
+\begin{frame}[fragile]{Factorizaci√≥n logar√≠tmica}
   \begin{itemize}
-      \item Buena alternativa si nos interesa poder factorizar r·pidamente cualquier n˙mero hasta $N$, y aceptamos el costo de una criba hasta $N$.
-      \item Si en lugar de solamente guardar si un n˙mero es primo o no, guardamos un primo que lo divida mientras hacemos la criba, luego podemos saber un divisor primo de cualquier n˙mero en $O(1)$. Esto permite factorizar cualquier n˙mero en $O(\lg N)$.
+      \item Buena alternativa si nos interesa poder factorizar r√°pidamente cualquier n√∫mero hasta $N$, y aceptamos el costo de una criba hasta $N$.
+      \item Si en lugar de solamente guardar si un n√∫mero es primo o no, guardamos un primo que lo divida mientras hacemos la criba, luego podemos saber un divisor primo de cualquier n√∫mero en $O(1)$. Esto permite factorizar cualquier n√∫mero en $O(\lg N)$.
   \end{itemize}
 
 \begin{lstlisting}
@@ -600,25 +622,161 @@ Este mÈtodo realiza solamente $O(\lg b)$ multiplicaciones.
 \end{lstlisting}
 \end{frame}
 
-\subsection{FactorizaciÛn directa}
-
-\ 
+\subsection{Factorizaci√≥n directa}
 
 \subsubsection{Algoritmo ingenuo}
 
-\ 
+\begin{frame}[fragile]{Algoritmo ingenuo}
+  \begin{itemize}
+      \item Sabemos que si no hay ning√∫n factor primo hasta $\sqrt{N}$, $N$ debe ser primo.
+      \item En virtud de esto, es natural dar un algoritmo de factorizaci√≥n que pruebe todos los posibles factores hasta ese valor.
+      \item Notar que podemos cortar en la ra√≠z de la parte de $N$ que falta factorizar, acelerando el proceso cuando hay bastantes factores chicos y uno grande.
+      \item El peor caso sigue siendo $\Theta(\sqrt{N})$
+  \end{itemize}
 
-\subsubsection{FactorizaciÛn r·pida}
+\begin{lstlisting}
+    for(int i = 2; i*i <= N; i++)
+    while (N % i == 0)
+    {
+        N /= i;
+        reportarFactorPrimo(i);
+    }
+    if (N > 1)
+        reportarFactorPrimo(N);
+\end{lstlisting}
+\end{frame}
 
-\ 
+\subsubsection{Algoritmo de la liebre y la tortuga de Floyd}
 
-%\subsubsection{Algoritmo de la liebre y la tortuga de Floyd}
+\begin{frame}{Introducci√≥n}
+    \begin{block}{Problema}
+        Supongamos que tenemos una sucesi√≥n $x_1, x_2, x_3, \cdots$ 
+        
+        Queremos ir ley√©ndola hasta encontrar la primera repetici√≥n (es decir, los menores $i,j$ tales que $x_i=x_j$ con $i < j$).
+    \end{block}
+    \begin{itemize}
+      \item ¬øC√≥mo podemos resolver esta tarea?
+      \pause
+      \invisible<1-1>{
+         \item √Årbol binario de b√∫squeda
+         \item Tabla hash.
+         \item Lista de valores
+      }
+    \end{itemize}
+\end{frame}
 
-\ 
+\begin{frame}{Introducci√≥n (cont.)}
+    \begin{itemize}
+         \item Un √°rbol binario de b√∫squeda (\texttt{set} de C++, \texttt{TreeSet} de Java) es una estructura eficiente que lo resuelve en $O(j \lg j)$.
+         \item Requiere $O(j)$ memoria.
+         \item Requiere un operador $<$ para los valores.
+    \end{itemize}
+\end{frame}
 
-%\subsubsection{Algoritmo de la $\rho$ de Pollard}
+\begin{frame}{Introducci√≥n (cont.)}
+    \begin{itemize}
+         \item Una tabla hash (\texttt{unordered\_set} de C++, \texttt{HashSet} de Java) es una estructura eficiente que lo resuelve en $O(j)$ (\textbf{asumiendo una buena funci√≥n de Hash}).
+         \item Requiere $O(j)$ memoria.
+         \item Requiere que se pueda computar una funci√≥n de hash sobre cada valor.
+    \end{itemize}
+\end{frame}
 
-\ 
+\begin{frame}{Introducci√≥n (cont.)}
+    \begin{itemize}
+         \item Una simple lista de valores (\texttt{vector} de C++, \texttt{ArrayList} de Java) es una estructura que lo resuelve en $O(j^2)$.
+         \item Requiere $O(j)$ memoria.
+         \item √önicamente requiere un operador de igualdad ($=$) sobre los elementos.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Introducci√≥n (cont.)}
+    \begin{itemize}
+    \item En el caso general (si leemos los $x_i$ de la entrada) es dif√≠cil mejorar estas estructuras. 
+    \item Sin embargo, un caso muy com√∫n se da cuando la sucesi√≥n se obtiene por aplicaci√≥n reiterada de alguna funci√≥n $f$:\\
+             $x_1$, $f(x_1)$, $f(f(x_1))$, $f(f(f(x_1)))$, $\cdots$
+    \item Veremos un algoritmo para dicho caso particular, que lograr√° lo mejor entre todos ellos y m√°s:
+        \begin{itemize}
+             \item O(1) memoria
+             \item O(j) tiempo (u $O(j)$ aplicaciones de $f$ si el costo de $f$ no es $O(1)$)
+             \item \textbf{√önicamente requiere un operador de igualdad ($=$) sobre los elementos}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Estructura de $\rho$}
+    \begin{itemize}
+    \item En este caso, cuando aparezca la primera repetici√≥n $x_i = x_j$, necesariamente ser√° $x_{i+1} = f(x_i) = f(x_j) = x_{j+1}$ y la secuencia entra en un ciclo
+     de per√≠odo $j-i$ que comienza en $i$.
+     \item Gr√°ficamente ($i=1785$, $j=3570$):
+    \end{itemize}
+    {\hfill \includegraphics[scale=0.5]{rho_cycle.jpg} \hfill}
+\end{frame}
+
+
+\begin{frame}{Caso a√∫n m√°s particular}
+    \begin{itemize}
+    \item Cuando la $f$ es inversible, no es dif√≠cil ver que la primera repetici√≥n ser√° de la forma $i=1$, $x_1 = x_j$.
+    \item En efecto, si $f$ es inversible, la $\rho$ debe degenerar a un ciclo simple, pues de lo contrario $x_i$ tendr√≠a
+           dos antecesores por $f$, y eso no puede ocurrir.
+    \item El algoritmo para este caso sencillo es entonces aplicar $f$ sucesivas veces hasta encontrar un elemento tal que $x_j = x_1$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Algoritmo de la liebre y la tortuga de Floyd}
+    \begin{itemize}
+    \item La idea en este caso es tener dos punteros, $a=x_2$ que ser√° la tortuga y $b=x_3$ que ser√° la liebre.
+    \item $a$ avanzar√° de a un elemento, recorriendo toda la secuencia.
+    \item $b$ en cambio avanzar√° de a \textbf{dos} elementos.
+    \item En cada paso verificamos si $x_a = x_b$ y continuamos hasta que as√≠ sea.
+    \item Notar que luego de $i$ pasos (no conocemos $i$), la tortuga y la liebre estar√°n ambos en el ciclo (digamos en $a_0=i$ y $b_0$).
+    \item Luego de eso, en a lo m√°s $j-i=T$ pasos m√°s coincidir√°n (su diferencia se incrementa en 1 cada paso).
+    \item Notar que si solamente nos interesa encontrar \textbf{alguna} coincidencia, podemos terminar aqu√≠.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Algoritmo de la liebre y la tortuga de Floyd (cont)}
+    \begin{itemize}
+    \item Luego de $i=1784$ pasos. $a_0=1785$ y $b_0=1787$. Llamemos $d=b_0-a_0=2$.
+    \end{itemize}
+    {\hfill \includegraphics[scale=0.35]{hare_tortoise_rho_cycle1.jpg} \hfill}
+\end{frame}
+
+\begin{frame}{Algoritmo de la liebre y la tortuga de Floyd (cont)}
+    \begin{itemize}
+    \item Como en cada paso adicional la liebre se acerca en 1 a la tortuga, la alcanza luego de $T-d = 1780$ pasos m√°s. Notar que se encuentran a $d$ del comienzo del ciclo.
+    \end{itemize}
+    {\hfill \includegraphics[scale=0.35]{hare_tortoise_rho_cycle2.jpg} \hfill}
+\end{frame}
+
+\begin{frame}{Algoritmo de la liebre y la tortuga de Floyd (cont)}
+    \begin{itemize}
+    \item Para completar el algoritmo, una vez que se encuentran ambos, reinicializamos la liebre (o la tortuga, da igual) al origen, y adem√°s, ahora hacemos moverse a la liebre de a un solo paso por vez, igual que la tortuga.
+    \end{itemize}
+    {\hfill \includegraphics[scale=0.35]{hare_tortoise_rho_cycle3.jpg} \hfill}
+\end{frame}
+
+\begin{frame}{Algoritmo de la liebre y la tortuga de Floyd (cont)}
+    \begin{itemize}
+    \item $i$ pasos m√°s tarde, ambos estar√°n en $x_i$, que ser√° el nuevo punto de encuentro. Una vez all√≠, es f√°cil dejar uno fijo y dar una vuelta al ciclo con el otro para determinar su longitud. La cantidad total de pasos es como mucho $2j$.
+    \end{itemize}
+    {\hfill \includegraphics[scale=0.35]{hare_tortoise_rho_cycle4.jpg} \hfill}
+\end{frame}
+
+\begin{frame}{Alternativa}
+    \begin{itemize}
+    \item Una alternativa menos mencionada en la literatura, pero con mejores constantes (pero iguales complejidades asint√≥ticas) es el algoritmo de Brent.
+    \item Este se basa en ir duplicando la longitud de ciclo candidata en cada paso. Se puede leer sobre √©l en wikipedia (\textit{Brent's Cycle Detection}).
+    \end{itemize}
+\end{frame}
+
+\subsubsection{Factorizaci√≥n r√°pida}
+
+\begin{frame}{Algoritmo de la $\rho$ de Pollard}
+    \begin{itemize}
+      \item M√°s tarea.
+    \end{itemize}
+\end{frame}
+
 
 
 \end{document}
