@@ -50,7 +50,7 @@
 {Programación Dinámica}
 
 \author[Agustín Gutiérrez] % (optional, use only with lots of authors)
-{~Agustín Gutiérrez}
+{~Agustín Santiago Gutiérrez}
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -60,7 +60,7 @@
   Universidad de Buenos Aires
 }
 \date[TC 2014] % (optional, should be abbreviation of conference name)
-{Training Camp 2014}
+{Campamento Caribeño ACM-ICPC 2016}
 
 % Acá se puede insertar el logo de la UBA
 % \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
@@ -409,7 +409,7 @@ Veamos un ejemplo de problema clásico.}
 \begin{itemize}
 \item Si aplicamos esto al problema anterior, la función y estados nos quedan al revés que antes: Esto es ``de atrás para adelante'', pero notar que nos permite reconstruir el camino en el orden natural.
 \item ¡Ahora sí podemos encontrar el camino lexicográficamente mínimo!
-\item También podemos encontrar si utilizamos este orden, el camino 420 en orden lexicográfico, pero dejemos eso para más adelante.
+\item También es posible encontrar si utilizamos este orden, el camino 420 en orden lexicográfico (ejercicio).
 \end{itemize}
 \end{frame}
 
@@ -621,56 +621,12 @@ double f(int mask) {
 
 \begin{frame}{Problema de los Peces}
 \begin{itemize}
-\item Supongamos que ahora tenemos que resolver el mismo problema, pero en lugar de para un s\'olo pez, para todos los peces. Podr\'iamos usar el mismo c\'odigo y resolver el problema 18 veces, pero hay algo m\'as eficiente.
+
+\item Supongamos que ahora tenemos que resolver el mismo problema, pero en lugar de para un s\'olo pez, para todos los peces. Podr\'iamos usar el mismo c\'odigo y resolver el problema 18 veces.
 \pause
-\invisible<1>{
-\item Lo que hicimos anteriormente fue movernos de un conjunto a sus subconjuntos. Lo que vamos a hacer ahora es movernos de un conjunto a sus superconjuntos.
-}
+\item Ejercicio: Pensar algo mejor para evitar tener que repetir el cálculo de la tabla de DP para cada pez.
+
 \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Problema de los Peces}
-\begin{lstlisting}
-double dp[1<<18];
-int n;
-double p[18][18];
-
-int main()
-{
-    cin >> n;
-    forn(i,n)
-    forn(j,n)
-        cin >> p[i][j];
-    forn(i,(1<<n))
-        dp[i] = -1;
-    dp[(1<<n)-1] = 1.;
-    forn(i,n)
-        printf("%.6lf\n",f(1<<i));
-}
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Problema de los Peces}
-\begin{lstlisting}
-double f(int mask)
-{
-    if(dp[mask]>-0.5)
-        return dp[mask];
-    dp[mask] = 0;
-    int vivos = 1;
-    forn(i,n)
-    if((mask>>i)%2==1)
-        vivos++;
-    double pares = (vivos*(vivos-1))/2;
-    forn(i,n)
-    forn(j,n)
-    {
-        if((mask&(1<<i))!=0&&(mask&(1<<j))==0)
-            dp[mask] += f(mask|(1<<j))*p[i][j]/pares;
-    }
-    return dp[mask];
-}
-\end{lstlisting}
 \end{frame}
 
 \subsection{Ejemplos}
@@ -706,7 +662,6 @@ Como estado podemos tomar la ciudad actual, y el conjunto (máscara) de las ciuda
 }
 \end{frame}
 
-
 \begin{frame}{Tarea}
 \begin{itemize}
 \item Tutorial de topcoder: \textit{A bit of fun: fun with bits}, por Bruce Merry\\
@@ -714,105 +669,6 @@ Como estado podemos tomar la ciudad actual, y el conjunto (máscara) de las ciuda
 \item {\tiny \url{https://icpcarchive.ecs.baylor.edu/index.php?option=com\_onlinejudge\&Itemid=8\&page=show\_problem\&problem=2451}}
 \item \url{http://goo.gl/iKtIH}
 \end{itemize}
-\end{frame}
-
-
-\section{Longest Increasing Subsequence}
-
-\begin{frame}{Subsecuencia creciente m\'as larga}
-\begin{block}{Subsecuencia creciente m\'as larga}
-El problema consiste en, dada una secuencia de n\'umeros, encontrar la subsecuencia de n\'umeros que aparezcan de manera creciente y que sea lo m\'as larga posible.
-\end{block}
-\pause
-\invisible<1>{
-\begin{block}{Soluci\'on cuadr\'atica}
-La soluci\'on trivial a este problema consiste en calcular en cada paso, la subsecuencia creciente m\'as larga que usa los primeros $i$ n\'umeros de la secuencia, recorriendo la soluci\'on para todos los $j<i$.
-\end{block}
-}
-\end{frame}
-
-\begin{frame}{Subsecuencia creciente m\'as larga}
-\begin{itemize}
-\item Existe una soluci\'on $O(n \log n)$ donde $n$ es la longitud de la secuencia. Para implementar esa soluci\'on vamos a tener tres vectores: el input (al que llamamos seq), $m$ y $p$.
-\pause
-\invisible<1>{
-\item En la $i$-\'esima iteraci\'on, vamos a tener en $m[j]$ un $k < i$ tal que hay una subsecuencia de largo $j$ que termina en $k$, con $seq[k]$ mínimo, mientras que $m[0]$ comienza inicializado en -1.
-\item Observación: $m$ está ordenado por los valores de $seq[m[i]]$ (esto nos permite hacer búsqueda binaria en tales valores).
-}
-\pause
-\invisible<1-2>{
-\item En la $i$-\'esima posicion de $p$ vamos a ir guardando el elemento anterior al $i$-\'esimo en la subsecuencia creciente m\'as larga que termina en el $i$-\'esimo elemento del input.
-}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Subsecuencia creciente m\'as larga}
-\begin{lstlisting}
-vector<int> lis()
-{
-    int n = seq.size(), L = 0;  m.resize(n+1);  m[0] = -1;  p.resize(n);
-    for(int i=0;i<n;i++){
-        int j = bs(L,seq[i]);
-        p[i] = m[j];
-        if(j==L||input[i]<seq[m[j+1]]){
-            m[j+1] = i;
-            L = max(L,j+1);
-        }
-    }
-    vector<int> res;
-    int t = m[L];
-    while(t!=-1){
-        res.push_back(seq[t]);
-        t = p[t];
-    }
-    reverse(res.begin(),res.end());
-    return res;
-}
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Subsecuencia creciente m\'as larga}
-\begin{lstlisting}
-int bs(int L, int num)
-{
-    int mx = L+1, mn = 0;
-    while(mx-mn>1)
-    {
-        int mid = (mx+mn)/2;
-        if(seq[m[mid]]<num)
-            mn = mid;
-        else
-            mx = mid;
-    }
-    return mn;
-}
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}{Subsecuencia creciente m\'as larga}
-\begin{itemize}
-\item Observemos que $m$ va a estar definido para todo $j < L$ y que $m[j]$ est\'a en el rango de vec para todo $0 < j \leq L$. Adem\'as en la b\'usqueda binaria nunca evaluamos $seq[m[0]]$.
-\pause
-\invisible<1>{
-\item Tambi\'en podemos ver que $p$ va a estar siempre definido para todo $0 \leq i < n$.
-}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Tarea}
-\begin{itemize}
-\item \url{http://www.spoj.com/problems/SUPPER/}
-\item \url{http://www.spoj.com/problems/LIS2/}
-\end{itemize}
-\end{frame}
-
-\section{Bonus track}
-
-\begin{frame}{Cosas de las que se puede hablar si sobra tiempo y hay que llenar}
-    \begin{itemize}
-        \item Dinámicas con frente.
-        \item Cálculo de la iésima solución lexicográficamente
-    \end{itemize}
 \end{frame}
 
 \end{document}
