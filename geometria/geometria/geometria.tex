@@ -55,7 +55,7 @@
 % does not look nice, try deleting the line with the fontenc.
 
 
-\title[Geometr\'ia Computacional] % (optional, use only with long paper titles)
+\title[Geometr\'ia y Planaridad] % (optional, use only with long paper titles)
 {Geometr\'ia y Planaridad}
 
 \author[Agustín Gutiérrez] % (optional, use only with lots of authors)
@@ -115,6 +115,26 @@
   % You might wish to add the option [pausesections]
 \end{frame}
 
+\begin{frame}
+
+``He who despises Euclidean Geometry is like a man who, returning from foreign parts, disparages his home.''
+
+\hfill \textit{H. G. Forder.}
+
+\vfill
+
+``Que nadie entre aquí si no sabe Geometría.''
+
+\hfill \textit{Platón}
+
+\vfill
+
+``Las ecuaciones son sólo la parte aburrida de la matemática. Trato de ver las cosas en términos de geometría''
+
+\hfill \textit{Stephen Hawking}
+
+\end{frame}
+
 \section{Introducci\'on}
 \begin{frame}
 
@@ -134,11 +154,30 @@ Entonces, para poder llegar a la segunda parte (la m\'as interesante), primero t
 
 \bigskip
 
-\textbf{Aclaraci\'on:} Nos referiremos siempre a problemas en $\mathbb{R}^2$, ya que son los m\'as comunes.
+Nos referiremos principalmente a problemas en $\mathbb{R}^2$ por ser más comunes, pero las mismas ideas aplican a $\mathbb{R}^3$ y superiores.
 
 \end{frame}
 
+\begin{frame}
+
+Como idea general, la técnica más básica para problemas geométricos es la de \textbf{discretización de candidatos}:
+
+\begin{itemize}
+    \item Muchas veces se pide encontrar, por ejemplo, un punto del plano que cumpla alguna característica particular.
+    \item Pero como el plano contiene infinitos puntos, no podemos probarlos todos.
+    \item Casi siempre podemos identificar un subconjunto de \textbf{candidatos}, de manera que la respuesta buscada sí o sí sea alguno de ellos.
+    \item En este caso, una solución posible consiste en explorar todos los candidatos y verificar lo que corresponda para cada uno.
+\end{itemize}
+
+Es fácil pasar por alto estas ideas, y tratar de buscar una solución más complicada ``que encuentre la solución directamente'' si uno no está atento.
+
+\end{frame}
+
+
 \section{Los elementos m\'as b\'asicos: puntos, vectores y rectas}
+
+\subsection{Algunas operaciones importantes entre vectores}
+
 \begin{frame}[fragile]
 Un punto en el plano (o un vector desde el origen hasta dicho punto) se puede representar con un par ordenado de coordenadas en un sistema cartesiano:
 
@@ -154,12 +193,11 @@ Se puede representar como {\tt pair<double,double>}, pero es poco declarativo. M
 struct Punto {
       double x;
       double y;
+      // double z; para problemas en el espacio, etc.
 };
 \end{lstlisting}
 
 \end{frame}
-
-\subsection{Algunas operaciones importantes entre vectores}
 
 \begin{frame}
 \begin{itemize}
@@ -183,11 +221,19 @@ El \emph{producto escalar} de dos vectores $u = (x_1,y_1)$ y $v = (x_2,y_2)$ es 
     \be
     \vec{u} \cdot \vec{v} = x_1 x_2 + y_1 y_2 = |\vec{u}| |\vec{v}| \cos\theta
     \ee
+    \be
+    \vec{u} \cdot \vec{v} = x_1 x_2 + y_1 y_2 + z_1 z_2 = |\vec{u}| |\vec{v}| \cos\theta \mbox{  (en 3D)}
+    \ee
     %
 \end{block}
 %
-    Observar que en particular si $\theta = 90^\circ$ el producto escalar se anula.
-\textbf{Es decir, dos vectores son perpendiculares si y s\'olo si su producto escalar da 0}.
+\begin{itemize}
+    \item El valor del producto escalar es la proyección ortogonal de $u$ sobre $v$, expresada con signo y multiplicada por $|v|$. Notar que como es conmutativo, lo mismo vale al revés.
+    \item Observar que en particular si $\theta = 90^\circ$ el producto escalar se anula.
+    \textbf{Es decir, dos vectores son perpendiculares si y s\'olo si su producto escalar da 0}.
+
+    \item \textbf{El producto escalar funciona igual, y tiene estas mismas propiedades, en $\mathbb{R}^n$} (por ejemplo, proyectar en 3D).
+\end{itemize}
 
 \end{frame}
 
@@ -200,7 +246,7 @@ Si $u,v \in \mathbb{R}^2$ ($u = (x_1,y_1)$ y $v = (x_2,y_2)$), se define $u \tim
    \vec{u} \times \vec{v} = x_1 y_2 - x_2 y_1
 \ee
 
-y se puede demostrar que:
+que corresponde a la componente $z$ del producto vectorial, y se puede demostrar que:
 
 \be
     |\vec{u} \times \vec{v}| = |\vec{u}| |\vec{v}| \sin\theta,
@@ -256,7 +302,14 @@ As\'i, la recta se escribir\'a como:
 \begin{center}
 $L(t) = a + t (b-a)$ con $t \in \mathbb{R}$.
 \end{center}
+
+Una gran ventaja de esta forma es que funciona exactamente igual en dimensiones superiores.
+
+Además, si bien a la hora de computar utilizamos necesariamente algún sistema de coordenadas,
+una enorme ventaja de los vectores es que son entidades \textit{independientes de las coordenadas} (por eso no hay casos especiales con vectores verticales, etc.).
+
 }
+
 \end{frame}
 
 \begin{frame}
@@ -278,6 +331,49 @@ Entonces, $L(t)$ pertenece al segmento ya dicho si y s\'olo si $t \in [0,1]$.
 }
 \end{frame}
 
+\subsection{El $\alpha$-$\beta$}
+
+\begin{frame}{Intersección de dos rectas}
+
+\begin{itemize}
+    \item ¿Qué pasa si tenemos que calcular el punto de intersección de dos rectas en el plano?
+    \item Dependerá de la representación usada, pero concentrémonos en la representación que recomendamos, $\mathbf{p} + t\mathbf{v}$.
+\end{itemize}    
+\pause
+    \invisible<1-1>{
+\begin{itemize}
+    \item Hay más de una manera de llegar a la cuenta correcta: veamos la que personalmente más me gusta.
+\end{itemize}    
+    }
+
+\end{frame}
+
+\begin{frame}{El $\alpha$-$\beta$}
+
+    $$p_1 + \alpha v_1 = p_2 + \beta v_2$$
+    
+    Queremos eliminar una de las dos variables desconocidas($\alpha$ y $\beta$). Hagamos entonces de ambos lados producto cruz con $v_2$:
+    
+    $$(p_1 + \alpha v_1) \times v_2 = (p_2 + \beta v_2) \times v_2$$
+    
+    $$p_1 \times v_2 + \alpha v_1 \times v_2 = p_2  \times v_2$$
+    
+    $$\alpha v_1 \times v_2 = (p_2 - p_1)  \times v_2$$
+    $$\alpha = \frac{(p_2 - p_1)  \times v_2}{v_1 \times v_2}$$
+
+Una vez que tenemos $\alpha$, el punto buscado es claramente $p_1 + \alpha v_1$
+
+\end{frame}    
+
+\begin{frame}{El $\alpha$-$\beta$ (observaciones)}
+
+    \begin{itemize}
+        \item Notar que el denominador es $v_1 \times v_2$, y por lo tanto se anula exactamente cuando las rectas son paralelas (vectores $v_1$ y $v_2$ alineados).
+        \item Si todas las coordenadas con las que trabajamos son enteras, la única operación que se sale de los enteros es la división para obtener $\alpha$. Esto prueba de paso que las intersecciones de rectas en estos casos tendrán coordenadas \textbf{racionales}.
+    \end{itemize}
+
+\end{frame}    
+
 %\subsection{Repaso de cuentas importantes}
 
 %producto cruz
@@ -288,11 +384,13 @@ Entonces, $L(t)$ pertenece al segmento ya dicho si y s\'olo si $t \in [0,1]$.
 
 %\subsection{Implementaci\'on - buenas pr\'acticas}
 
-\section{Sweep Line (T\'ecnicas de barrido)}
+\section{Técnicas de barrido}
+
+\subsection{Sweep line}
 
 \begin{frame}{¿Qu\'e es sweep line?}
 \begin{itemize}
-\item La t\'ecnica de \emph{sweep line} se caracteriza por tener una l\'inea (vertical u horizontal generalmente, pero no necesariamente) que va barriendo todo el plano y recolectando informaci\'on sobre puntos de \'el.
+\item La t\'ecnica de \emph{sweep line} (y similares) se caracteriza por tener una l\'inea (vertical u horizontal generalmente, pero no necesariamente) que va barriendo todo el plano y recolectando informaci\'on sobre puntos de \'el.
 
 \bigskip 
 %
@@ -303,15 +401,13 @@ Entonces, $L(t)$ pertenece al segmento ya dicho si y s\'olo si $t \in [0,1]$.
 \end{frame}
 
 \begin{frame}
-En alg\'un sentido, la t\'ecnica de sweep line es como la programaci\'on din\'amica: uno aprende la idea general, pero luego en cada problema se aplica y se utiliza de manera diferente, adaptando la idea general ya vista.
+En alg\'un sentido, las t\'ecnicas de barrido son como la programaci\'on din\'amica: uno aprende la idea general, pero luego en cada problema se aplica y se utiliza de manera diferente, adaptando la idea general ya vista.
 \bigskip
 
-Es por eso que creemos que la mejor manera de aprender esta t\'ecnica es viendo algunos ejemplos de problemas relevantes en los que se la utiliza.
+Es por eso que creemos que la mejor manera de aprender estas t\'ecnicas es viendo algunos ejemplos de problemas relevantes en los que se las utiliza.
 \end{frame}
 
-\subsection{Par de puntos m\'as cercano}
-
-\begin{frame}
+\begin{frame}{Par de puntos m\'as cercano}
 \begin{block}{Problema}
 Dados $n$ puntos en el plano, queremos encontrar dos tales que la distancia entre ellos sea la m\'inima posible (o sea, el par m\'as cercano)
 \end{block}
@@ -354,7 +450,7 @@ La inicializaremos en $\infty$ (en la pr\'actica, un valor tan grande tal que se
 
 \bigskip
 
-\item Supongamos que ya pasamos por primeros $i-1$ puntos con la l\'inea vertical, y ahora chocamos al $i$-\'esimo punto.
+\item Supongamos que ya pasamos por los primeros $i-1$ puntos con la l\'inea vertical, y ahora chocamos al $i$-\'esimo punto.
 \end{itemize}
 \end{frame}
 
@@ -371,7 +467,7 @@ Estos puntos son los \'unicos candidatos a estar a distancia menor que $h$ del p
 \end{frame}
 
 \begin{frame}
-Tambi\'en fij\'emonos que no cualquier punto cuya coordenada $x$ est\'e a distancia menor a $h$ es un candidato real 
+Observemos también que no cualquier punto cuya coordenada $x$ est\'e a distancia menor a $h$ es un candidato real 
 a ser una mejor soluci\'on. Si la coordenada $y$ de un punto est\'a a una distancia mayor a $h$, tampoco ser\'a un candidato. 
 
 \begin{center}
@@ -390,7 +486,7 @@ As\'i, s\'olo deber\'iamos quedarnos con los puntos cuya coordenada $y$ est\'e e
 
 As\'i, \emph{quitar} los puntos cuya coordenada $y$ est\'a demasiado lejos de $p_i$ se reduce simplemente a no mirar los 
 puntos fuera de un intervalo.
-%COMO HAGO ESTOOOOO
+%COMO HAGO ESTOOOOO  ---------->      Awwwwwwwwwwwwwww <3
 }
 \end{frame}
 
@@ -431,72 +527,60 @@ El algoritmo consta de 3 pasos importantes:
 As\'i, en total el algoritmo es $O(n \lg n)$!
 \end{frame}
 
-\begin{frame}{Problema para pensar}
+\begin{frame}{Problemas para pensar}
 http://www.spoj.com/problems/CLOSEST/
-\end{frame}
 
-\subsection{Intersecci\'on de segmentos}
-
-\begin{frame}
-\begin{block}{Problema}
-Dados $n$ segmentos en el plano (horizontales o verticales), queremos hallar todas las intersecciones entre dos segmentos.
-\end{block}
-
-\bigskip
-Nuevamente, si entra en tiempo la soluci\'on trivial $O(n^2)$, hay que programar esa.
-\bigskip
-
-Si no, como es por ejemplo el caso $n = 1000000$, tenemos que pensar otra manera de resolverlo. Utilizaremos sweep line.
-
-\end{frame}
-
-\begin{frame}
-\begin{itemize}
-\item De nuevo utilizaremos un barrido con una l\'inea vertical, pero aqu\'i la situaci\'on es distinta: no ser\'an puntos los que crucen la l\'inea, sino segmentos.
-\bigskip
-\item Para representarlos, utilizaremos \textbf{eventos}. Los eventos ser\'an coordenadas $x$ en los que pasa algo relevante:
-\bigskip
-\begin{itemize}
-\item Por cada segmento horizontal, habr\'a un evento de apertura (cuando comienza el segmento) y uno de clausura (cuando pasamos por el final del mismo). 
-\bigskip
-
-\item Por cada segmento vertical, habr\'a un evento (la aparici\'on del segmento en una cierta coordenada $x$).
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Pseudoc\'odigo del algoritmo}
-
-\begin{lstlisting}
-lista = la lista de todos los eventos posibles
-ordeno lista por las coordenadas x de sus elementos
-
-S = set de segmentos ordenado por la coordenada y de sus elementos
-    (inicialmente vacio)
-
-para cada event en lista
-    if ( event = horizontal de apertura )
-        inserto el segmento en el set S
-    if ( event = horizontal de clausura )
-        quito el segmento del set S
-    if ( event = vertical (segmento de y1 a y2, con y1 < y2) )
-        itero los segmentos de S en el rango (y1,y2)
-        imprimo las intersecciones halladas
-
-\end{lstlisting}
-
-\textbf{Detalle:} en un set se puede hallar el rango (y1,y2) en $O(\lg n)$,
-utilizando las funciones \texttt{lowerbound} y \texttt{upperbound}.
-
-\end{frame}
-
-\begin{frame}{Problema para pensar}
 http://goo.gl/UT0O2U (A Safe Bet - WF 2012)
 \end{frame}
 
-\subsection{C\'apsula convexa (Convex Hull)}
+\subsection{Sweep circle}
 
-\begin{frame}
+\begin{frame}{¿Qu\'e es sweep circle?}
+\begin{itemize}
+\item La idea de sweep circle es exactamente la misma que la ya mencionada sweep line, pero en lugar de mover una recta imaginaria, movemos una circunferencia.
+
+\item La circunferencia puede moverse en linea recta (traslación) o alrededor de un centro fijo (rotación).
+
+\item Como un círculo es una figura acotada, el choque de la circunferencia con los puntos interesantes produce eventos de \textit{entrada} y de \textit{salida} en el círculo.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo: Ubicación ideal de un círculo en el eje Y}
+
+\begin{block}{Problema}
+    Dado un radio $R > 0$ entero, se debe indicar cuál es la máxima cantidad de puntos de la grilla de coordenadas enteras que es posible encerrar con un círculo de radio $R$, cuyo centro se encuentre posicionado sobre la recta $x=0$ (el eje $y$).
+\end{block}
+
+\pause
+\invisible<1-1>
+{
+    Observación: Alcanza con considerar las posiciones $0 \leq y \leq 1$
+}
+
+\end{frame}
+
+\begin{frame}{Planteo con sweep circle}
+
+\begin{itemize}
+    \item Comenzamos con el círculo ubicado en $(0,0)$, y todos los correspondientes puntos de la grilla adentro.
+    \item ``Movemos'' el círculo en vertical, hasta llegar a $(0,1)$, procesando los eventos de entrada y salida de puntos.
+    \item La máxima cantidad de puntos que tengamos dentro del círculo en cualquier momento, es el resultado.
+\end{itemize}
+
+\pause
+
+\invisible<1-1>{
+    \begin{itemize}
+       \item Notar que hay solamente $O(R)$ eventos de entrada / salida, y además la cantidad de puntos totales dentro del círculo inicial puede computarse en $O(R)$.
+       \item Con todo esto y la técnica de barrido, el problema se resuelve en $O(R \lg R)$
+    \end{itemize}
+}
+
+\end{frame}
+
+\subsection{Sweep ray (o semirrecta)}
+
+\begin{frame}{C\'apsula convexa (Convex Hull)}
 \begin{block}{Problema}
 Se tiene un mill\'on vacas en un campo. Se quieren encerrar todas las vacas con una cerca, de manera tal que se minimice la cantidad de alambre utilizado (las vacas deben quedar en el borde o dentro de la cerca).
 \end{block}
