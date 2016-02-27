@@ -163,7 +163,7 @@
         \item Notar que $t$ será el nodo inicial, y las aristas se miran al revés.
         \item Si solo miramos las aristas de la red residual que van de un nodo con rank $r$ a uno con rank $r-1$, queda un DAG, que contiene \textbf{todos} los caminos de aumento mínimos.
         \item La idea será extraer ahora caminos de aumento igual que Edmonds Karp, pero varios en esta misma pasada para que no quede ninguno de esta longitud mínima.
-        \item De esta forma habrá en total $O(V)$ pasadas.
+        \item De esta forma habrá en total $O(V)$ pasadas. En cada una extraemos los caminos con un DFS.
     \end{itemize}
 \end{frame}
 
@@ -367,7 +367,7 @@
 \begin{frame}{Complejidad}
     \begin{itemize}
         \item El algoritmo realiza $O(V)$ iteraciones, y en cada una realiza un BFS y un DFS.
-        \item La complejidad \textbf{NO ES} $O(VE)$ (Esto pensó Dinitz inicialmente, antes de ir la clase de flujo máximo). ¿Por qué?
+        \item La complejidad \textbf{NO ES} $O(VE)$ (Esto pensó Dinitz inicialmente, antes de ir a la clase de flujo máximo). ¿Por qué?
         \item En peor caso la complejidad es $O(V^2 E)$, y existen casos donde el algoritmo realiza esa cantidad de pasos.
     \end{itemize}
     \pause
@@ -382,7 +382,7 @@
     \begin{itemize}
         \item Nunca borrar ni agregar aristas explícitamente: Con solo calcular el rank y saber el flujo (o la capacidad residual) actual, es posible saber si una arista hay que recorrerla o ignorarla.
         \item Se recorren solo las aristas con capacidad residual > 0, que van a un vecino con menor rank.
-        \item Notar que DFS \textit{vuelve para atrás} al saturar un camino, con lo cual puede \textit{revisitar nodos}.
+        \item Notar que el DFS \textit{vuelve para atrás} al saturar un camino, con lo cual puede \textit{revisitar nodos} (que mantienen su estado entre visitas).
         \item Para esto es cómodo implementarlo no-recursivamente, con una pila de nodos para el camino en construcción,
                 y un indicador de ``siguiente arista por considerar'' por cada nodo.
         \item Para eficiencia y practicidad, es conveniente guardar solamente la capacidad residual de las aristas.
@@ -392,7 +392,7 @@
 
 \begin{frame}{Referencias}
     \begin{itemize}
-        \item \textit{Introduction to Algorithms, 2nd Edition}. MIT Press. \\ Thomas H. Cormen, y otros.
+        \item \textit{Introduction to Algorithms, 2nd Edition}. MIT Press. \\ \textbf{26 Maximum Flow} \\ Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein
         \item ``\textit{Dinitz' Algorithm: The Original Version and Even's Version}'' \\ Yefim Dinitz
     \end{itemize}
 \end{frame}
