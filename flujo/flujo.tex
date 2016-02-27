@@ -167,16 +167,6 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Idea (cont)}
-    \begin{itemize}
-        \item En cada iteración, Dinitz calcula con BFS el \textbf{rank} de cada nodo: la longitud de un camino mínimo en la red residual desde ese nodo hasta $t$.
-        \item Notar que $t$ será el nodo inicial, y las aristas se miran al revés.
-        \item Si solo miramos las aristas de la red residual que van de un nodo con rank $r$ a uno con rank $r-1$, queda un DAG, que contiene \textbf{todos} los caminos de aumento mínimos.
-        \item La idea será extraer ahora caminos de aumento igual que Edmonds Karp, pero varios en esta misma pasada para que no quede ninguno de esta longitud mínima.
-        \item De esta forma habrá en total $O(V)$ pasadas.
-    \end{itemize}
-\end{frame}
-
 \begin{frame}{Ejecución}
 
     Grafo inicial:
@@ -396,7 +386,7 @@
         \item Para esto es cómodo implementarlo no-recursivamente, con una pila de nodos para el camino en construcción,
                 y un indicador de ``siguiente arista por considerar'' por cada nodo.
         \item Para eficiencia y practicidad, es conveniente guardar solamente la capacidad residual de las aristas.
-               El flujo final puede reconstruirse de ser necesario restando las capacidades iniciales.
+               El flujo final puede reconstruirse de ser necesario restando de las capacidades iniciales.
     \end{itemize}
 \end{frame}
 
